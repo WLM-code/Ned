@@ -8,7 +8,7 @@
 <style>
 /* Layout: smalle rail met stappen links (op telefoon een scrollbare strook), een leesbare kolom rechts. */
 :root{
-  --bg:#ECEEF0; --surface:#F8F8F9; --fg:#2A2E35; --muted:#5F6978; --line:#D3D7DD;
+  --bg:#E3E5EE; --pat:#DADDE9; --surface:#F8F8F9; --fg:#2A2E35; --muted:#5F6978; --line:#D3D7DD;
   --accent:#9C5460; --accent-soft:#F0DEE1; --btn:#E4BFC5;
   --ok:#4A7459; --ok-soft:#D8E8DE; --warn:#76602F; --warn-soft:#EFE5CE;
   --rose:#EAD3D6; --sage:#D3E3D9; --blue:#D1DCE9; --sand:#EDE3CD; --lav:#DDD7EA;
@@ -18,20 +18,20 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#1A1D22; --surface:#23272E; --fg:#E6E4E1; --muted:#9AA1AD; --line:#343A43;
+    --bg:#1B1E27; --pat:#20242E; --surface:#23272E; --fg:#E6E4E1; --muted:#9AA1AD; --line:#343A43;
     --accent:#D9A0AA; --accent-soft:#3A2D31; --btn:#5E4249;
     --ok:#8CC5A3; --ok-soft:#24352C; --warn:#D8BD84; --warn-soft:#38301E;
     --rose:#3A2D31; --sage:#243029; --blue:#252E3A; --sand:#332E22; --lav:#2E2A3A; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#1A1D22; --surface:#23272E; --fg:#E6E4E1; --muted:#9AA1AD; --line:#343A43;
+  --bg:#1B1E27; --pat:#20242E; --surface:#23272E; --fg:#E6E4E1; --muted:#9AA1AD; --line:#343A43;
   --accent:#D9A0AA; --accent-soft:#3A2D31; --btn:#5E4249;
   --ok:#8CC5A3; --ok-soft:#24352C; --warn:#D8BD84; --warn-soft:#38301E;
   --rose:#3A2D31; --sage:#243029; --blue:#252E3A; --sand:#332E22; --lav:#2E2A3A; color-scheme:dark;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--f-body);padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body{background-color:var(--bg);background-image:linear-gradient(135deg,var(--pat) 25%,transparent 25%),linear-gradient(225deg,var(--pat) 25%,transparent 25%),linear-gradient(315deg,var(--pat) 25%,transparent 25%),linear-gradient(45deg,var(--pat) 25%,transparent 25%);background-size:56px 56px;background-position:-28px 0,-28px 0,0 0,0 0;color:var(--fg);font:17px/1.55 var(--f-body);padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .wrap{max-width:1000px;margin:0 auto}
 header{padding-block:28px 18px}
 .eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
