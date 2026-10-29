@@ -113,6 +113,19 @@ textarea{width:100%;min-height:110px;resize:vertical;font:inherit;color:var(--fg
   nav button[aria-current="true"] .t{display:inline}
 }
 @media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+.mic.listening{background:var(--rose);border-color:var(--accent)}
+.micmsg{margin-top:8px;min-height:0}
+.micmsg:empty{display:none}
+.tests{display:grid;gap:12px;margin-top:20px}
+.pick{display:flex;gap:14px;align-items:center;padding:16px 18px;border-radius:12px}
+.pick .emoji{font-size:32px;line-height:1;flex:none}
+.pick .pk{flex:1;min-width:0}
+.pick .eyebrow{color:var(--fg);opacity:.7;margin-bottom:4px}
+.pick .sub{margin-top:2px;color:var(--fg)}
+@media (max-width:520px){.pick{flex-wrap:wrap}.pick .btn{width:100%;text-align:center}}
+@keyframes pulse{50%{opacity:.55}}
+.mic.listening{animation:pulse 1.4s infinite}
+@media (prefers-reduced-motion:reduce){.mic.listening{animation:none}}
 html{color-scheme:light}
 body{margin:0}
 [hidden]{display:none!important}
@@ -124,7 +137,7 @@ body{margin:0}
   <header>
     <div class="eyebrow">📚 Nederlands · boekverslag en toets</div>
     <h1>Dansen tussen wolken van traangas</h1>
-    <p class="sub">🌫️ Monique Samuel. Je bouwt de samenvatting zelf op door de vragen te beantwoorden, vergelijkt met het modelantwoord en sluit af met een oefentoets.</p>
+    <p class="sub">🌫️ Monique Samuel. Je bouwt de samenvatting zelf op door de vragen te beantwoorden, vergelijkt met het modelantwoord en sluit af met drie oefentoetsen.</p>
     <div class="bar" aria-hidden="true"><i id="bar"></i></div>
   </header>
   <div class="grid">
@@ -136,131 +149,221 @@ body{margin:0}
 <script>
 var STEPS=[
 {t:"Het boek in het kort",intro:"Begin met het grote plaatje: waar, wanneer en wie.",qs:[
- {q:"Waar en wanneer speelt het verhaal zich af? Welke gebeurtenis in het land staat centraal?",h:"Denk aan de president en aan de Corniche in Alexandrië.",
-  a:"Het verhaal speelt in Egypte, vooral in Alexandrië en Caïro, in januari en februari 2011. Centraal staat de volksopstand tegen president Hosni Mubarak. Op 11 februari 2011 treedt hij af.",
-  k:["Egypte (Alexandrië en Caïro)","Januari en februari 2011","Opstand tegen president Mubarak","Mubarak valt op 11 februari"]},
- {q:"Wie schreef het boek en wat voor achtergrond heeft de schrijfster?",h:"Achter in het boek staat een stukje over haar.",
-  a:"Monique Samuel (1989) is schrijver, opiniemaker en politicoloog. Haar vader is Egyptisch en haar moeder Nederlands. Daardoor kon ze zich goed inleven in jongeren in Egypte en in Nederland.",
-  k:["Monique Samuel","Politicoloog en schrijver","Egyptische vader, Nederlandse moeder"]}
+ {q:"Waar en wanneer speelt het verhaal zich af? Welke gebeurtenis in het land staat centraal?",h:"Denk aan de havenstad aan zee en aan de president.",
+  a:"Het verhaal speelt in Alexandrië, een havenstad in Egypte, in januari en februari 2011. De hoofdpersonen wonen in dezelfde straat in een arme wijk. Centraal staat de volksopstand tegen president Hosni Mubarak. Hij treedt op 11 februari 2011 af.",
+  k:["Alexandrië in Egypte","Januari en februari 2011","Opstand tegen president Mubarak","Mubarak treedt af op 11 februari 2011"]},
+ {q:"Wie schreef het boek en wat zette haar aan het schrijven?",h:"Achter in het boek staat een stukje over de schrijfster.",
+  a:"Monique Samuel (1989) is schrijver en politicoloog. Haar vader is Egyptisch en haar moeder Nederlands. Ze zag beelden van een onbekende jongen die op klaarlichte dag werd neergeschoten door Egyptische veiligheidsagenten terwijl hij met open armen op hen afliep. Daar wilde ze een roman over schrijven.",
+  k:["Monique Samuel","Politicoloog met Egyptische vader en Nederlandse moeder","Beelden van een neergeschoten jongen met open armen","Ze wilde een roman over deze onbekende held"]}
 ]},
-{t:"Mohammed en Abdelrahman",intro:"Twee vrienden uit Alexandrië die heel verschillend zijn.",qs:[
- {q:"Wie is Mohammed en wat is zijn grote droom?",h:"Wat doet hij graag op de Corniche en voor de spiegel?",
-  a:"Mohammed is een jongen uit Alexandrië, zoon van kruidenier Sayed Ibrahim. Hij danst graag en droomt ervan danser te worden. Dansen is voor hem een manier om vrij te zijn, maar zijn omgeving is streng en bang.",
-  k:["Zoon van de kruidenier Sayed Ibrahim","Danst graag","Wil danser worden","Zijn omgeving is streng"]},
- {q:"Wie is Abdelrahman en waarin verschilt hij van Mohammed?",h:"Denk aan voetbal, geloof en zijn vader.",
-  a:"Abdelrahman is Mohammeds beste vriend en de zoon van een apotheker. Hij is serieus, gelovig en goed in voetbal. Mohammed is losser en danst liever. Abdelrahman raakt betrokken bij de imam en later bij een groep die demonstreert.",
-  k:["Beste vriend van Mohammed","Zoon van de apotheker","Serieus, gelovig, voetballer","Raakt betrokken bij de groep"]}
+{t:"Mohammed en zijn gezin",intro:"De jongen die wil dansen, en het gezin waarin hij opgroeit.",qs:[
+ {q:"Wie is Mohammed en wat is zijn grote droom?",h:"Wat doet hij op de Corniche en stiekem in zijn kamer?",
+  a:"Mohammed is een sportieve jongen uit Alexandrië. Hij is de oudste zoon van kruidenier Sayed Ibrahim en wordt op school 'de leeuw' genoemd. Hij hardloopt graag langs de Corniche en danst stiekem. Zijn droom is danser worden, een echte kunstenaar in de moderne dans. Zijn vader wil dat hij de winkel overneemt, maar daar heeft Mohammed geen zin in.",
+  k:["Oudste zoon van kruidenier Sayed Ibrahim","Sportief, hardloper, 'de leeuw'","Danst stiekem en wil danser worden","Vader wil dat hij de winkel overneemt"]},
+ {q:"Hoe ziet het gezin van Mohammed eruit?",h:"Er zijn een vader, een moeder, een zus en een broertje.",
+  a:"Vader Sayed werkt de hele dag in de winkel, is streng en hard, maar helpt ook de armen in de flat. Moeder kookt de hele dag en is bezorgd. Layla is Mohammeds zus, maar een jaartje ouder en een computernerd. Abdou is het jongere broertje van tien, een verwend moederskindje dat in andermans spullen neust.",
+  k:["Vader Sayed: streng, hardwerkende kruidenier","Moeder: kookt en is bezorgd","Layla: zus, een jaartje ouder, slim","Abdou: broertje van tien"]}
 ]},
-{t:"Samya",intro:"Een tweede hoofdpersoon, met een liefde die niet zomaar mag.",qs:[
+{t:"Abdelrahman, de imam en Omar",intro:"Twee vrienden die uit elkaar groeien, en de mannen die Abdelrahman meenemen.",qs:[
+ {q:"Wie is Abdelrahman en waarin verschilt hij van Mohammed?",h:"Denk aan voetbal, geloof, zijn baard en zijn vader.",
+  a:"Abdelrahman is Mohammeds beste vriend, de zoon van de apotheker. Hij is serieus en gelovig, laat een baard staan en wil de hele Koran uit zijn hoofd leren. Op het voetbalveld is hij de ster. Mohammed maakt liever grappen en danst. Abdelrahman maakt zich zorgen over de politiek, Mohammed niet. Sinds ze zestien zijn groeien ze uit elkaar.",
+  k:["Beste vriend, zoon van de apotheker","Gelovig, baard, leert de Koran uit zijn hoofd","Voetbalster","Zorgen over politiek, Mohammed niet"]},
+ {q:"Wat wil de imam van Abdelrahman?",h:"Wat vraagt hij na de thee over de president?",
+  a:"De imam is onder de indruk van Abdelrahmans trouwe moskeebezoek en nodigt hem uit voor thee. Hij vormt een groepje 'goede, slimme en eerlijke jongens' die zich durven uit te spreken over de leiders. Hij vraagt Abdelrahman wat hij van de president vindt. Abdelrahman noemt hem een tiran en voelt zich voor het eerst deel van iets groots. Hij houdt het geheim voor zijn vader en voor Mohammed.",
+  k:["Nodigt Abdelrahman uit voor thee","Vormt een groepje jongens tegen de leiders","Vraagt wat hij van de president vindt","Abdelrahman houdt het geheim"]},
+ {q:"Wie is Omar en waarom vraagt hij Abdelrahman om mee te doen?",h:"Omar heeft een kaal hoofd, een baard en groene ogen.",
+  a:"Omar (eigenlijk Nabil, door de imam Omar genoemd) is de eerste broeder van de imam en later de leider van de groep. Hij vindt dat de imam mooi praat maar dat het bij woorden blijft en dat de oudere generatie lafheid heeft. Hij zag Abdelrahman bij het stille protest voor Khaled Said en vraagt hem zich aan te sluiten bij 'de groep'.",
+  k:["Omar (Nabil) is de leider van de groep","Vindt dat de imam alleen praat","Zag Abdelrahman bij het protest voor Khaled Said","Vraagt hem lid te worden van 'de groep'"]}
+]},
+{t:"Samya en de liefde",intro:"Een meisje dat haar vader mist, en liefdes die niet mogen.",qs:[
  {q:"Wie is Samya en wat is er met haar vader gebeurd?",h:"Het boek opent met haar. Wat hangt er in haar kamer?",
-  a:"Samya is een christelijk meisje in Alexandrië. Haar vader is drie jaar geleden overleden na een ongeluk met een motor, en haar oom Naguib bracht haar naar de stad aan zee. Ze mist hem nog elke dag. Ze loopt vaak langs de winkel van Sayed in de hoop Mohammed te zien.",
-  k:["Christelijk meisje","Vader overleden na ongeluk met een motorrijder","Oom Naguib, verhuizing naar Alexandrië","Verliefd op Mohammed"]},
- {q:"Waarom is de liefde tussen Samya en Mohammed moeilijk?",h:"Denk aan het woord haram en aan hun geloof.",
-  a:"Mohammed is moslim en Samya is christen. In hun buurt wordt een relatie tussen een moslim en een christen niet geaccepteerd. Daarom houden ze het geheim en zijn ze bang voor wat anderen zeggen. Toch gaan ze op date en wandelen ze langs de zee.",
-  k:["Verschillende religie","Niet geaccepteerd in de buurt","Ze houden het geheim","Toch gaan ze op date"]}
+  a:"Samya is een christelijk meisje van vijftien. Haar vader werd tijdens het hardlopen aangereden door een motorrijder en was twee dagen later dood, zonder dat ze afscheid kon nemen. Oom Naguib, een norse man, bracht haar daarna naar Alexandrië. Ze mist haar vader elke dag. Haar moeder laat haar nergens heen gaan, omdat ze haar niet wil verliezen.",
+  k:["Christelijk meisje van vijftien","Vader aangereden door een motorrijder","Oom Naguib bracht haar naar Alexandrië","Moeder houdt haar angstig binnen"]},
+ {q:"Hoe komt de date tussen Samya en Mohammed tot stand en waarom is die moeilijk?",h:"Er zit een briefje tussen de boodschappen. Denk ook aan het woord haram.",
+  a:"Samya is stiekem verliefd op Mohammed, vooral op zijn blauwgrijze ogen die haar aan haar vader doen denken. Mohammed stopt een briefje tussen haar boodschappen met een uitnodiging voor een wandeling langs de Corniche. Hij wil vooral een meisje 'scoren' om niet onder te doen voor de andere jongens en voelt geen vlinders. Hij is moslim en zij christen: dat is haram. Tijdens de wandeling danst hij voor haar in het park.",
+  k:["Briefje tussen de boodschappen","Samya is verliefd, Mohammed wil een meisje 'scoren'","Moslim en christen: haram","Wandeling langs de Corniche, hij danst in het park"]},
+ {q:"Wat voelt Mohammed voor Abdelrahman, en waaraan zie je dat?",h:"Denk aan de douchescène en aan wat hij roept als Abdelrahman sterft.",
+  a:"Mohammed voelt meer voor Abdelrahman dan voor een gewone vriend, maar durft dat niet toe te geven ('Meer nog... Nee, niet aan denken!'). Als zijn zus Layla vraagt op wie hij verliefd is, noemt hij Samya. Als Abdelrahman wordt neergeschoten roept hij: 'Ik hou van jou!' Zijn omgeving en de imam zouden dit nooit accepteren.",
+  k:["Meer dan vriendschap, maar hij durft het niet te zeggen","Tegen Layla noemt hij Samya","Roept 'Ik hou van jou' bij Abdelrahmans dood","Het mag niet in zijn omgeving"]}
 ]},
 {t:"Layla en haar blog",intro:"Het verhaal heeft ook een stem op internet.",qs:[
- {q:"Wie is Layla en wat doet ze online?",h:"Ze heeft een blog onder een andere naam.",
-  a:"Layla is de jongere zus van Mohammed. Ze is een computernerd en schrijft in het Engels een anonieme blog, Confessions of an Egyptian Nerd. Daarin schrijft ze over het leven in Egypte, haar familie en de politiek. Haar eerste blogpost is van 21 januari 2011.",
-  k:["Zus van Mohammed","Computernerd","Anonieme blog in het Engels","Eerste post 21 januari 2011"]},
- {q:"Waarom doet Layla zich voor als Joyce uit Texas?",h:"Wie kan er meelezen als je kritiek schrijft op de regering?",
-  a:"Layla is bang voor de Egyptische veiligheidsdiensten. Wie kritiek schrijft op de regering kan gevaar lopen. Daarom verzint ze een andere identiteit, Joyce uit Texas, en verbergt ze dat ze uit Egypte schrijft. Haar vader mag het niet weten.",
-  k:["Bang voor de geheime dienst","Kritiek op de regering is gevaarlijk","Verzonnen identiteit: Joyce uit Texas"]},
- {q:"Wie is Kimberly en welke rol heeft ze?",h:"Ze reageert op de blog en chat met Layla.",
-  a:"Kimberly is een Amerikaanse studente uit Los Angeles. Ze leest de blog, reageert en chat met Layla via Skype en chat. Voor Layla is ze een virtuele vriendin die vragen stelt over de gebeurtenissen en laat zien hoe anders haar leven is.",
-  k:["Studente uit Los Angeles","Reageert op de blog","Chat en Skype met Layla","Contrast tussen hun levens"]}
+ {q:"Wie is Layla en wat doet ze online?",h:"Ze begint op 21 januari 2011 met iets nieuws.",
+  a:"Layla is Mohammeds zus, een jaartje ouder en razend slim. Ze mag na de zomer computer science studeren aan de Amerikaanse universiteit. Ze draagt een hoofddoek en moet veel in het huishouden doen. Ze is de enige die weet dat Mohammed wil dansen. Op 21 januari 2011 begint ze een blog, Confessions of an Egyptian Nerd, waarin ze schrijft over de regering, haar vader en het leven als meisje in Egypte.",
+  k:["Zus van Mohammed, een jaartje ouder","Slim, studeert straks computer science","Weet als enige van Mohammeds droom","Blog Confessions of an Egyptian Nerd vanaf 21 januari"]},
+ {q:"Waarom doet Layla zich online voor als Joyce uit Texas?",h:"Wie kan er meelezen als je kritiek schrijft op de regering?",
+  a:"Layla is bang voor de Egyptische veiligheidsdiensten en voor haar vader. Daarom noemt ze haar naam en stad niet ('straat X in stad Y') en doet ze zich voor als Joyce uit Texas. Haar IP-adres en Facebookaccount zijn gefingeerd en omgeleid via Texas.",
+  k:["Bang voor de geheime dienst","Bang voor haar vader","Haar echte naam en stad blijven geheim","Joyce uit Texas, IP-adres omgeleid"]},
+ {q:"Wie is Kimberly en welke rol heeft ze?",h:"Ze reageert op de eerste blogs.",
+  a:"Kimberly is een Amerikaanse studente politieke wetenschap aan de UCLA in Los Angeles. Ze vindt Layla's blog voor een paper over vrouwen in Egypte en schrijft dat ze haar dapper vindt. Ze chatten via Skype en laten zien hoe verschillend hun levens zijn: Kimberly heeft een eigen kamer op de campus, Layla woont thuis en mag nauwelijks de straat op.",
+  k:["Studente uit Los Angeles (UCLA)","Vindt de blog dapper","Chat met Layla via Skype","Contrast tussen hun levens"]}
 ]},
-{t:"De groep en Khaled Said",intro:"Hoe de jongens in de beweging terechtkomen.",qs:[
- {q:"Wie was Khaled Said en waarom is hij belangrijk voor de opstand?",h:"Zoek de Facebookgroep 'Wij zijn allen ...'.",
-  a:"Khaled Said was een jonge man die door politieagenten werd vermoord. Foto's van zijn verminkte lichaam verspreidden zich over internet. De Facebookpagina 'Wij zijn allen Khaled Said' groeit snel en wordt het symbool van het verzet tegen het regime.",
-  k:["Jonge man vermoord door politie","Foto's op internet","Facebookpagina 'Wij zijn allen Khaled Said'","Symbool van het verzet"]},
- {q:"Hoe raakt Abdelrahman bij de groep betrokken en wie is Omar?",h:"Omar spreekt hem aan na de gebeden.",
-  a:"Abdelrahman is gelovig en bezoekt de imam. Omar, de leider van een actieve cel van de beweging, spreekt hem aan: hij moet niet langer toekijken, maar meedoen. Zo komt Abdelrahman in de groep terecht, en later neemt hij Mohammed mee naar het café waar de groep vergadert.",
-  k:["Omar is de leider van de cel","Roept Abdelrahman op om mee te doen","Mohammed gaat later mee","Ze vergaderen in een café"]}
+{t:"Khaled Said en de groep",intro:"Waar de beweging begint.",qs:[
+ {q:"Wie was Khaled Said en wat gebeurde er na zijn dood?",h:"Zoek de Facebookpagina 'Wij zijn allen ...' en het stille protest.",
+  a:"Khaled Said was een jonge ICT'er die op klaarlichte dag door twee politieagenten werd vermoord. Zijn vrienden verspreidden foto's van zijn verminkte lichaam. Er ontstond een Facebookpagina, 'Wij zijn allen Khaled Said'. Bij een stil protest stonden mensen in het zwart, twintig meter uit elkaar, met een koran of bijbel in de hand, zodat de politie hen niet kon arresteren.",
+  k:["Jonge ICT'er, vermoord door politieagenten","Foto's op internet","Facebookpagina 'Wij zijn allen Khaled Said'","Stil protest in het zwart, twintig meter uit elkaar"]},
+ {q:"Wat is 'de groep' en hoe komt Mohammed erbij?",h:"Abdelrahman neemt hem mee naar een café.",
+  a:"De groep is een geheim genootschap, een actieve cel van de Facebookgroep met contact met activisten in Cairo. Leden zijn Omar (leider), Ali, Hassan, Michael (een christen) en Hanan (een meisje), later ook Abdelrahman. Op 25 januari neemt Abdelrahman Mohammed mee naar een café, waar hij wordt ondervraagd en Omar vraagt: 'Ben je een held of een lafaard?'",
+  k:["Geheim genootschap, cel van de Facebookgroep","Omar, Ali, Hassan, Michael en Hanan","Abdelrahman neemt Mohammed mee naar een café","'Ben je een held of een lafaard?'"]}
 ]},
-{t:"Internet en social media",intro:"Een nieuwe manier om te organiseren, en een nieuwe manier om je te bedreigen.",qs:[
- {q:"Welke rol spelen internet en social media in het verhaal?",h:"Denk aan Facebook, Twitter en wat er op 28 januari gebeurt.",
-  a:"Via Facebook en Twitter roepen jongeren op om te demonstreren, bijvoorbeeld op 25 januari, en delen ze nieuws en foto's. Layla blogt en chat met Kimberly. De regering sluit het internet en het mobiele netwerk af, rond 28 januari. Mensen verliezen elkaar uit het oog en kijken alleen nog naar de tv.",
-  k:["Oproepen voor demonstraties via Facebook en Twitter","Layla blogt en chat","De regering sluit het internet af","Mensen verliezen contact"]}
+{t:"Demonstraties en internet",intro:"Hoe de opstand zich ontwikkelt en hoe de ouders reageren.",qs:[
+ {q:"Hoe verlopen de eerste dagen van de protesten? Hoe reageert de politie?",h:"25 januari is een nationale vakantiedag. Wat helpt tegen traangas?",
+  a:"Op dinsdag 25 januari, de nationale vakantiedag ter ere van de politie, beginnen de protesten in Cairo. De groep in Alexandrië volgt de beelden op tv en internet. De dag erna lopen Mohammed en Abdelrahman voorop in de optocht. De politie antwoordt met waterkanonnen, traangas, rubberkogels en echte kogels, en sluipschutters schieten vanaf de daken. Demonstranten gebruiken doeken met cola of Pepsi tegen het gas. Abdelrahman noemt iedere betoger 'een druppel in een oceaan'.",
+  k:["25 januari: nationale vakantiedag voor de politie","Mohammed en Abdelrahman lopen voorop","Waterkanonnen, traangas en kogels","Cola of Pepsi tegen traangas"]},
+ {q:"Welke rol spelen internet en social media, en wat doet de regering ermee?",h:"Denk aan Facebook, sms, Skype en wat er rond 28 januari gebeurt.",
+  a:"Jongeren organiseren en volgen de protesten via Facebook, Twitter, sms en Skype. Layla blogt en chat met Kimberly, en de groep volgt het nieuws met een oude laptop en buitenlandse zenders. Rond 28 januari sluit de regering het internet en het mobiele netwerk af. Layla kan Kimberly niet meer bereiken en kijkt machteloos vanaf haar balkon.",
+  k:["Organiseren via Facebook, Twitter, sms","Layla blogt en chat met Kimberly","Regering sluit het internet af","Layla verliest het contact"]},
+ {q:"Hoe reageren de ouders en wat laat dat zien over meisjes en jongens?",h:"Wat mag Layla niet, en wat zegt vader tegen Mohammed?",
+  a:"Vader verbiedt zijn gezin om mee te doen en slaat Layla in haar gezicht als ze protesteert. Hij vindt politiek een mannenzaak. Mohammed zegt na de eerste protestdag dat hij moet meedoen en vader antwoordt verrassend: 'Ik begrijp het, zoon. Vecht voor ons.' Layla blijft binnen en kijkt vanaf het balkon. De moeders zijn doodsbang.",
+  k:["Vader verbiedt het en slaat Layla","'Politiek is een mannenzaak'","Mohammed mag wel: 'Vecht voor ons'","Moeders zijn bang"]}
 ]},
-{t:"De demonstraties",intro:"Van eerste protest tot chaos op straat.",qs:[
- {q:"Wat gebeurt er op straat? Noem de belangrijkste dagen en hoe de politie reageert.",h:"25 januari en de vrijdag daarna, 'de dag van de woede'.",
-  a:"Op 25 januari is de eerste grote demonstratie, op een nationale vakantiedag ter ere van de politie. Op vrijdag 28 januari, de 'dag van de woede', gaat het hele land de straat op. De politie reageert hard met traangas, waterkanonnen en rubberkogels. Er vallen gewonden en doden. Samya blijft bang binnen met gesloten luiken, en de jongens zijn 'een druppel in een oceaan'.",
-  k:["25 januari: eerste grote demonstratie","28 januari: dag van de woede","Politie met traangas en kogels","Gewonden en doden","Samya blijft binnen"]}
+{t:"De Dag van de Woede en het einde",intro:"Wat er met Abdelrahman en Mohammed gebeurt, en hoe het boek eindigt.",qs:[
+ {q:"Wat gebeurt er op de Dag van de Woede?",h:"Het is vrijdag. Wat gebeurt er na het gebed in de moskee?",
+  a:"Het is vrijdag, de Dag van de Woede. Na het vrijdagmiddaggebed gaat het hele land de straat op. In Alexandrië barricadeert de politie de uitgangen van de moskee en vliegen helikopters laag over. Mohammed, Abdelrahman, Omar, Michael en de anderen trekken met protestborden naar de boulevard en proberen buren naar buiten te halen. De ordetroepen schieten.",
+  k:["Vrijdag, na het middaggebed","Politie barricadeert de moskee, helikopters","Protestborden, buren naar buiten halen","Ordetroepen schieten"]},
+ {q:"Wat gebeurt er met Abdelrahman en Mohammed?",h:"Samya ziet het vanuit de badkamer.",
+  a:"Abdelrahman wordt in zijn hoofd geschoten en sterft in Mohammeds armen. Mohammed roept: 'Ik hou van jou!' Daarna loopt hij als in trance met gespreide armen naar de rij zwarte mannen en wordt doodgeschoten. Samya ziet het door het ventilatieluik van de badkamer en valt flauw. Layla ziet het vanaf het balkon.",
+  k:["Abdelrahman wordt in het hoofd geschoten","Mohammed: 'Ik hou van jou'","Mohammed loopt met open armen op de agenten af","Samya ziet het door het ventilatieluik"]},
+ {q:"Hoe eindigt het boek, en wat schrijft Layla?",h:"Lees nog eens de blogpost 'Mijn broer' van 11 februari.",
+  a:"Op 11 februari 2011 treedt Mubarak af en viert het volk feest. Layla kan niet juichen. In haar blogpost 'Mijn broer' schrijft ze over Mohammed, de zoon van de kruidenier en haar lieve broer. Ze ondertekent met haar echte naam: niet Joyce uit virtueel Texas, maar Layla uit Alexandrië.",
+  k:["11 februari: Mubarak treedt af","Volk viert feest, Layla kan niet juichen","Blogpost 'Mijn broer'","Ze tekent met Layla uit Alexandrië"]}
 ]},
-{t:"Het einde",intro:"Wat er uiteindelijk gebeurt.",qs:[
- {q:"Hoe loopt het verhaal af voor het land en voor Mohammed?",h:"Lees nog eens de laatste blogpost, 'Mijn broer'.",
-  a:"Op 11 februari 2011 treedt Mubarak af en viert het volk feest. Mohammed wordt tijdens de protesten door de politie doodgeschoten. In de laatste blogpost 'Mijn broer' schrijft Layla over hem. Ze tekent met haar echte naam: niet Joyce uit Texas, maar Layla uit Alexandrië.",
-  k:["Mubarak treedt af (11 februari 2011)","Mohammed wordt doodgeschoten","Layla schrijft 'Mijn broer'","Ze onthult haar echte naam"]}
-]},
-{t:"Thema's",intro:"Dit is vaak waar je over praat bij een toets of gesprek.",qs:[
- {q:"Welke thema's herken je? Geef bij elk thema een voorbeeld uit het boek.",h:"Denk aan vrijheid, angst, ouders, religie, internet en dromen.",
-  a:"Vrijheid tegenover angst: de ouders zijn bang voor de politie en houden hun kinderen binnen.\nJongeren tegenover ouderen: de jongeren durven te demonstreren.\nReligie: Mohammed en Samya, moslim en christen.\nSocial media: oproepen via Facebook en het afgesloten internet.\nDromen tegenover werkelijkheid: Mohammed wil dansen en wordt doodgeschoten.\nVriendschap: Mohammed en Abdelrahman.",
-  k:["Vrijheid en angst","Jongeren en ouders","Religie","Internet en social media","Dromen en werkelijkheid","Vriendschap"]}
+{t:"Thema's",intro:"Hier gaat het vaak over in een gesprek of toets.",qs:[
+ {q:"Welke thema's herken je? Geef bij elk thema een voorbeeld uit het boek.",h:"Denk aan vrijheid, angst, ouders, geloof, meisjes, liefde en internet.",
+  a:"Vrijheid en dromen: Mohammed wil dansen, 'dromen zijn lichter dan traangas'.\nJongeren en ouders: Layla vindt dat haar ouders een generatie zijn die nooit durfde op te staan.\nGeloof: de imam, Omar en Abdelrahman, en een christelijke Samya en Michael.\nMeisjes en jongens: Layla mag niet de straat op, Hayem wordt gedwongen te trouwen.\nVerboden liefde: Mohammed en Samya, en Mohammed en Abdelrahman.\nSocial media: Facebook en blogs, tot de regering het internet afsluit.\nGeweld en moed: wie neemt het risico?",
+  k:["Vrijheid en dromen","Jongeren en ouders","Geloof","Meisjes en jongens","Verboden liefde","Internet en social media"]}
 ]},
 {t:"Opbouw en titel",intro:"De vorm van het boek, belangrijk voor de bespreking.",qs:[
- {q:"Hoe is het boek opgebouwd? Welke soorten tekst komen voor?",h:"Kijk in de inhoudsopgave en bij hoofdstuk 'Hello Kimberly'.",
-  a:"Het boek wisselt tussen verschillende personages: Mohammed, Abdelrahman, Samya en Layla. Daartussen staan blogposts van Layla (met titel, datum en reacties) en chatgesprekken met tijdstippen. Verder zijn er twee intermezzo's. Zo ontstaat een mix van verhaal en documentair materiaal.",
-  k:["Verschillende personages en perspectieven","Blogposts met datum en reacties","Chatgesprekken","Twee intermezzo's"]},
+ {q:"Hoe is het boek opgebouwd? Welke soorten tekst komen voor?",h:"Kijk in de inhoud en bij 'Hello Kimberly'.",
+  a:"Korte hoofdstukken wisselen tussen personages: Samya, Mohammed, Abdelrahman en Layla. Daartussen staan Layla's blogposts met web-adres, datum en tijd, titel en comments, en chatgesprekken met tijdstippen. Er zijn ook twee intermezzo's. Zo mengt het boek een verhaal met documentair materiaal.",
+  k:["Wisselend perspectief","Blogposts met datum, titel en comments","Chatgesprekken met tijdstippen","Twee intermezzo's"]},
  {q:"Wat betekent de titel 'Dansen tussen wolken van traangas'?",h:"Welke twee werelden staan in de titel?",
-  a:"De titel combineert dans, wat Mohammed liefheeft en wat vrijheid betekent, met traangas, het geweld waarmee het regime protesten tegenhoudt. De jongeren dansen en dromen tussen het geweld van de straat door.",
-  k:["Dansen staat voor vrijheid en dromen","Traangas staat voor geweld en onderdrukking","De twee botsen"]}
+  a:"Dansen staat voor vrijheid, dromen en Mohammeds ziel. Traangas staat voor het geweld waarmee het regime de protesten tegenhoudt. De titel laat zien dat dromen en vrijheid op de proef worden gesteld in een gewelddadige tijd. Mohammed denkt zelf: 'Dromen zijn lichter dan traangas.'",
+  k:["Dansen is vrijheid en dromen","Traangas is geweld en onderdrukking","De twee botsen","'Dromen zijn lichter dan traangas'"]}
 ]}
 ];
 
-var DECO=[["📖","blue"],["🩰","rose"],["💌","lav"],["💻","sage"],["✊","sand"],["📡","blue"],["🌫️","rose"],["🕯️","lav"],["🧩","sage"],["🗂️","sand"]];
-function hero(emoji,col,eyebrow,title,sub){return '<div class="hero" style="background:var(--'+col+')"><span class="emoji" aria-hidden="true">'+emoji+'</span><div><div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2><p class="sub">'+sub+'</p></div></div>'}
-var QUIZ=[
- {q:"Wie schreef het boek?",o:["Monique Samuel","Khaled Hosseini","Hosni Mubarak","Kimberly de Wit"],c:0,e:"Het boek is van Monique Samuel, politicoloog met een Egyptische vader en een Nederlandse moeder.",s:0},
- {q:"In welk jaar speelt het verhaal?",o:["2005","2011","2015","2001"],c:1,e:"De blogposts hebben data in januari en februari 2011.",s:0},
- {q:"Wat is Mohammeds grote droom?",o:["Voetballer worden","Dokter worden","Danser worden","Imam worden"],c:2,e:"Mohammed danst graag en droomt ervan danser te worden.",s:1},
- {q:"Wat voor werk heeft Abdelrahmans vader?",o:["Hij is apotheker","Hij is imam","Hij is politieagent","Hij is kruidenier"],c:0,e:"Abdelrahmans vader is apotheker. De vader van Mohammed is kruidenier.",s:1},
- {q:"Wat is Samya's geloof?",o:["Ze is moslim","Ze is christen","Ze is atheïst","Ze is jood"],c:1,e:"Samya is christen en Mohammed is moslim. Dat maakt hun liefde moeilijk.",s:2},
- {q:"Wat is er gebeurd met Samya's vader?",o:["Hij zit in de gevangenis","Hij is naar Amerika verhuisd","Hij is overleden na een ongeluk met een motor","Hij is imam geworden"],c:2,e:"Haar vader overleed twee dagen na een aanrijding met een motorrijder.",s:2},
- {q:"Wie is Layla voor Mohammed?",o:["Zijn vriendin","Zijn zus","Zijn moeder","Zijn nicht"],c:1,e:"Layla is de jongere zus van Mohammed en ze blogt als Joyce.",s:3},
- {q:"Waarom doet Layla zich voor als Joyce uit Texas?",o:["Ze wil beroemd worden","Ze wil Engels oefenen","Ze is bang voor de Egyptische veiligheidsdiensten","Haar vriendin vroeg het"],c:2,e:"Een blog met kritiek kan gevaarlijk zijn in Egypte. Ze verbergt wie ze is.",s:3},
- {q:"Hoe heet de blog van Layla?",o:["Confessions of an Egyptian Nerd","Tahrir Diaries","Letters from Alexandria","Cairo Calling"],c:0,e:"De blog heet Confessions of an Egyptian Nerd.",s:3},
- {q:"Wie is Kimberly?",o:["Laylas zus in Amerika","Een Amerikaanse studente en virtuele vriendin van Layla","Een journaliste uit Cairo","Samya's tante"],c:1,e:"Kimberly woont in Los Angeles en chat met Layla.",s:3},
- {q:"Wie was Khaled Said?",o:["De leider van Mohammeds groep","Een jonge man die door politieagenten werd vermoord","Een Egyptische voetballer","De imam uit de wijk"],c:1,e:"Khaled Said werd vermoord. Daarna ontstond de Facebookpagina 'Wij zijn allen Khaled Said'.",s:4},
- {q:"Wie is de leider van de groep waar Abdelrahman bij komt?",o:["Michael","Omar","Hassan","Ali"],c:1,e:"Omar leidt de actieve cel van de beweging en spreekt Abdelrahman aan.",s:4},
- {q:"Welke dag was de eerste grote demonstratie?",o:["25 januari","1 januari","11 februari","14 februari"],c:0,e:"Op 25 januari 2011, een nationale vakantiedag voor de politie, begint de eerste grote demonstratie.",s:6},
- {q:"Wat doet de regering met het internet?",o:["Ze maakt het sneller","Ze sluit het internet en het mobiele netwerk af","Ze laat alleen de politie internetten","Ze doet niets"],c:1,e:"Rond 28 januari wordt het internet afgesloten. Mensen verliezen contact met elkaar.",s:5},
- {q:"Waarmee reageert de politie op de demonstranten?",o:["Met bloemen","Met traangas, waterkanonnen en rubberkogels","Met een toespraak","Met niets"],c:1,e:"De politie reageert hard. Er vallen gewonden en doden.",s:6},
- {q:"Wat gebeurt er op 11 februari 2011?",o:["Er komt een nieuwe president","Mubarak treedt af","Het internet gaat weer aan","De demonstraties stoppen"],c:1,e:"Mubarak valt. Voor Layla is er geen feest, want Mohammed is vermoord.",s:7},
- {q:"Wat gebeurt er aan het einde met Mohammed?",o:["Hij emigreert naar Amerika","Hij wordt danser","Hij wordt doodgeschoten","Hij trouwt met Samya"],c:2,e:"Mohammed wordt doodgeschoten. Layla schrijft de blogpost 'Mijn broer'.",s:7},
- {q:"Welke tekstvormen zitten naast de gewone hoofdstukken in het boek?",o:["Gedichten en liedjes","Blogposts en chatgesprekken","Krantenartikelen en brieven","Recepten"],c:1,e:"Blogposts van Layla met datum en reacties, en chatgesprekken met tijdstippen.",s:9}
+function Q(q,o,c,e,s){return {q:q,o:o,c:c,e:e,s:s}}
+var QUIZZES=[
+{name:"Toets 1",title:"Personen en feiten",emoji:"🧑‍🤝‍🧑",col:"blue",desc:"Wie is wie en wat is er aan de hand.",qs:[
+ Q("Wie schreef het boek?",["Monique Samuel","Khaled Said","Kimberly Collins","Omar Nabil"],0,"Monique Samuel is politicoloog en schrijver, met een Egyptische vader en een Nederlandse moeder.",0),
+ Q("In welke stad wonen de hoofdpersonen?",["Alexandrië","Cairo","Luxor","Aswan"],0,"Alexandrië is de havenstad aan de Middellandse Zee. Cairo is het centrum van de protesten.",0),
+ Q("Wat is Mohammeds grote droom?",["Voetballer worden","Dokter worden","Danser worden","Imam worden"],2,"Mohammed danst stiekem en wil een echte kunstenaar in de moderne dans worden.",1),
+ Q("Wat is het beroep van Mohammeds vader, Sayed Ibrahim?",["Apotheker","Kruidenier","Imam","Leraar"],1,"Sayed heeft een kleine kruidenierswinkel en wil dat Mohammed die overneemt.",1),
+ Q("Wat is het beroep van Abdelrahmans vader?",["Apotheker","Kruidenier","Politieagent","Taxichauffeur"],0,"Abdelrahmans vader is apotheker en heeft een kleine apotheek vlak bij de moskee.",2),
+ Q("Wat is Samya's geloof?",["Ze is moslim","Ze is christen","Ze is niet gelovig","Ze is joods"],1,"Samya is christen en Mohammed is moslim. Daarom is hun date haram.",3),
+ Q("Wat gebeurde er met Samya's vader?",["Hij werd door een motorrijder aangereden en overleed","Hij werd opgepakt door de politie","Hij verhuisde naar Amerika","Hij werd imam"],0,"Hij werd tijdens het hardlopen aangereden en was twee dagen later dood.",3),
+ Q("Wie is Layla voor Mohammed?",["Zijn vriendin","Zijn zus, een jaartje ouder","Zijn nicht","Zijn jongere zusje"],1,"Layla is een jaartje ouder dan Mohammed en behandelt hem als een kleine broer.",1),
+ Q("Hoe heet Layla's blog?",["Confessions of an Egyptian Nerd","Tahrir Diaries","Letters from Alexandria","Cairo Calling"],0,"Confessions of an Egyptian Nerd.",4),
+ Q("Welke naam gebruikt Layla online?",["Joyce uit Texas","Jane uit Londen","Fatima uit Cairo","Nora uit Parijs"],0,"Ze doet zich voor als Joyce uit Texas en leidt haar IP-adres om via Texas.",4),
+ Q("Wie is Kimberly?",["Layla's zus in Amerika","Een Amerikaanse studente uit Los Angeles","Een journaliste","Samya's tante"],1,"Kimberly studeert politieke wetenschap aan de UCLA.",4),
+ Q("Wie is Omar?",["De leider van de groep","De apotheker","Mohammeds oom","Een politieagent"],0,"Omar leidt de actieve cel van de Facebookgroep 'Wij zijn allen Khaled Said'.",2),
+ Q("Wie was Khaled Said?",["De leider van Mohammeds groep","Een jonge ICT'er die door politieagenten werd vermoord","Een Egyptische voetballer","De imam uit de wijk"],1,"Foto's van zijn verminkte lichaam gingen over internet en leidden tot een Facebookpagina.",5),
+ Q("Hoe heet Mohammeds jongere broertje?",["Abdou","Ali","Hassan","Michael"],0,"Abdou is tien en een verwend moederskindje.",1)
+]},
+{name:"Toets 2",title:"Het verhaal",emoji:"📖",col:"sage",desc:"Wat er gebeurt, van het briefje tot het einde.",qs:[
+ Q("Wat stopt Mohammed tussen Samya's boodschappen?",["Een briefje met een uitnodiging voor een wandeling","Een bos bloemen","Een foto van hemzelf","Een bedrag aan geld"],0,"Hij vraagt haar mee voor een wandeling langs de Corniche en ondertekent met 'M'.",3),
+ Q("Waarom vraagt Mohammed Samya mee uit?",["Hij is smoorverliefd op haar","Hij wil, net als de andere jongens, een meisje scoren","Zijn vader dwingt hem","Layla heeft het gevraagd"],1,"De vlinders blijven uit: hij wil niet onder doen voor zijn vrienden.",3),
+ Q("Wat doet Mohammed in het park voor Samya?",["Hij zingt","Hij danst","Hij rent een marathon","Hij leest een gedicht voor"],1,"Zijn droom is dansen en hij danst voor haar, tot hij struikelt.",3),
+ Q("Wat wil de imam van Abdelrahman?",["Dat hij zijn leerling wordt in een groepje dat zich uitspreekt tegen de leiders","Dat hij de apotheek overneemt","Dat hij naar Cairo verhuist","Dat hij stopt met voetballen"],0,"De imam vormt een groep 'goede, slimme en eerlijke jongens'.",2),
+ Q("Wat is de nationale vakantiedag op 25 januari?",["Dag van de politie","Dag van de president","Dag van de revolutie","Dag van het offerfeest"],0,"Een dinsdag, ter ere van de politie. De groep denkt: vandaag is er geen agent vrij.",6),
+ Q("Hoe protesteerden de mensen bij het stille protest voor Khaled Said?",["In het zwart, twintig meter uit elkaar, met koran of bijbel in de hand","Met spandoeken in het rood","Met vuurwerk op het plein","Met een lange mars door de stad"],0,"Zo kon de politie hen niet arresteren, want ze stonden niet samen.",5),
+ Q("Wat helpt volgens Twitter tegen traangas?",["Cola of Pepsi","Water","Melk","Azijn"],0,"Mohammed haalt tassen blikjes uit zijn vaders winkel.",6),
+ Q("Wat doet Layla's vader als ze wil demonstreren?",["Hij geeft haar een klap en verbiedt het","Hij gaat mee","Hij sluit haar op in de kelder","Hij belt de politie"],0,"Hij vindt dat politiek een mannenzaak is.",6),
+ Q("Wat zegt Mohammeds vader na de eerste protestdag tegen hem?",["'Je mag nooit meer weg'","'Ik begrijp het, zoon. Vecht voor ons.'","'Ga terug naar school'","'Jij bent geen zoon van mij'"],1,"Hij noemt Mohammed 'een man' en geeft hem eten mee.",6),
+ Q("Wat doet de regering met het internet?",["Ze sluit het internet en het mobiele netwerk af","Ze maakt het sneller","Ze laat alleen de politie internetten","Ze doet niets"],0,"Layla kan Kimberly niet meer bereiken.",6),
+ Q("Hoe heet de vrijdag waarop Mohammed en Abdelrahman sterven?",["Dag van de Woede","Dag van de Revolutie","Dag van de Rouw","Dag van de Vrijheid"],0,"Na het vrijdagmiddaggebed gaat het hele land de straat op.",7),
+ Q("Wat gebeurt er met Abdelrahman?",["Hij wordt in zijn hoofd geschoten en sterft","Hij wordt gearresteerd","Hij vlucht naar Cairo","Hij wordt imam"],0,"Mohammed roept: 'Ik hou van jou!'",7),
+ Q("Hoe sterft Mohammed?",["Hij loopt met gespreide armen op de agenten af en wordt doodgeschoten","Hij verdrinkt in de zee","Hij valt van het dak","Hij wordt aangereden"],0,"Samya ziet het door het ventilatieluik van de badkamer.",7),
+ Q("Wat gebeurt er op 11 februari 2011?",["Mubarak treedt af","Mubarak wordt herkozen","Het internet gaat weer aan","Mohammed wordt geboren"],0,"Het volk viert feest, Layla schrijft 'Mijn broer'.",7)
+]},
+{name:"Toets 3",title:"Thema's en vorm",emoji:"🧩",col:"lav",desc:"Voorbereiding op het gesprek: begrijpen en uitleggen.",qs:[
+ Q("Welke tekstvormen staan naast de gewone hoofdstukken?",["Gedichten en liedjes","Blogposts en chatgesprekken","Krantenartikelen en brieven","Recepten"],1,"Blogposts met datum en comments, en chatgesprekken met tijdstippen.",9),
+ Q("Hoeveel intermezzo's zitten er in het boek?",["Twee","Eén","Vier","Geen"],0,"Er zijn twee intermezzo's.",9),
+ Q("Waarom schrijft Layla anoniem?",["Ze is bang voor de veiligheidsdiensten en haar vader","Ze wil beroemd worden","Ze vindt haar naam lelijk","Haar school verbiedt blogs"],0,"Een kritische blog kan gevaarlijk zijn in Egypte.",4),
+ Q("Wat betekent de titel 'Dansen tussen wolken van traangas'?",["Dromen en vrijheid botsen met geweld","Een danswedstrijd in het park","Een recept met kruiden","Een weerbericht"],0,"Dans staat voor vrijheid, traangas voor het geweld van het regime.",9),
+ Q("Welke zin hoort bij Mohammeds kijk op zijn droom?",["Dromen zijn lichter dan traangas","Dromen zijn zwaarder dan staal","Dromen zijn voor dwazen","Dromen zijn van de president"],0,"Hij houdt zich vast aan zijn droom terwijl het geweld om hem heen toeneemt.",9),
+ Q("Wat verwijt Layla de generatie van haar ouders?",["Dat ze nooit durfde op te staan en alleen bidt en wacht","Dat ze te veel geld verdient","Dat ze te veel reist","Dat ze ongelovig is"],0,"Ze schrijft dat ze 'dat bidden en wachten meer dan zat' is.",4),
+ Q("Wat zegt Omar over de imam?",["Hij praat mooi, maar het blijft bij woorden","Hij is de beste leider","Hij is een spion","Hij is zijn vader"],0,"Omar vindt dat de oudere generatie niets doet.",2),
+ Q("Welk thema komt naar voren als Mohammed wel mee mag demonstreren en Layla niet?",["Ongelijkheid tussen jongens en meisjes","Armoede","Religie","Sport"],0,"Layla: 'Politiek is een mannenzaak', zegt haar vader.",6),
+ Q("Wat laat het verhaal van Hayem (de 'runaway bride') zien?",["Een meisje dat gedwongen wordt te trouwen","Een bruiloft met veel gasten","Een meisje dat wegrent van school","Een bruid die hardloopt"],0,"Hayem moet trouwen met een achterneef en hoeft daarna niet meer te studeren.",4),
+ Q("Voor wie voelt Mohammed meer dan vriendschap, wat hij niet durft te zeggen?",["Abdelrahman","Omar","Michael","Abdou"],0,"Hij durft het niet toe te geven en noemt tegen Layla de naam Samya.",2),
+ Q("Wat is het gevolg van de dood van Mohammed voor Layla's blog?",["Ze onthult haar echte naam in 'Mijn broer'","Ze stopt met bloggen","Ze verwijdert haar blog","Ze verhuist naar Texas"],0,"Ze tekent: 'niet Joyce uit virtueel Texas, maar Layla uit Alexandrië'.",7),
+ Q("Wat zegt Layla in 'Mijn broer' over de dood van Mohammed?",["Dat er geen vrijheid is als een vrije, speelse geest niet meer kan dansen","Dat de politie hem heeft beschermd","Dat hij niet echt is gestorven","Dat hij het zelf wilde"],0,"Zijn droom van dansen en vrijheid wordt afgebroken, terwijl het volk feestviert.",7)
+]}
 ];
 
+var DECO=[["📖","blue"],["🏠","sand"],["🕌","lav"],["💌","rose"],["💻","sage"],["✊","blue"],["📡","sand"],["🕯️","rose"],["🧩","lav"],["🗂️","sage"]];
 var TALK=[
  "Waarom blogt Layla anoniem, en wat zegt dat over Egypte?",
  "Wat is het conflict tussen Mohammed en zijn omgeving over het dansen?",
- "Waarom is de liefde tussen Mohammed en Samya moeilijk?",
- "Waarom sluit Abdelrahman zich aan bij de groep? Wat vind je van Omar?",
+ "Waarom is de liefde tussen Mohammed en Samya moeilijk, en wat voelt Mohammed echt?",
+ "Waarom sluit Abdelrahman zich aan bij de groep? Wat vind je van Omar en de imam?",
  "Wat is de rol van het internet in het verhaal?",
- "Waarom eindigt het boek met Mohammeds dood, juist als Mubarak aftreedt?",
+ "Waarom eindigt het boek met Mohammeds dood en Layla's blogpost?",
  "Welk personage vond je het meest interessant en waarom?",
  "Hoe past de titel bij het boek?",
  "Zou je het boek aanraden? Waarom wel of niet?"
 ];
 
-var KEY="traangas-studiehulp-v1";
-var st={view:"step",i:0,ans:{},shown:{},keys:{},best:null};
-try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);st.ans=p.ans||{};st.shown=p.shown||{};st.keys=p.keys||{};st.best=p.best||null}}catch(e){}
+var KEY="traangas-studiehulp-v2";
+var st={view:"step",i:0,ans:{},shown:{},keys:{},best:{}};
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);st.ans=p.ans||{};st.shown=p.shown||{};st.keys=p.keys||{};st.best=p.best||{}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({ans:st.ans,shown:st.shown,keys:st.keys,best:st.best}))}catch(e){}}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
 function qid(si,qi){return si+"_"+qi}
 function stepDone(si){return STEPS[si].qs.every(function(_,qi){return st.shown[qid(si,qi)]})}
 function doneCount(){var n=0;for(var i=0;i<STEPS.length;i++)if(stepDone(i))n++;return n}
+function hero(emoji,col,eyebrow,title,sub){return '<div class="hero" style="background:var(--'+col+')"><span class="emoji" aria-hidden="true">'+emoji+'</span><div><div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2><p class="sub">'+sub+'</p></div></div>'}
 
+/* Inspreken */
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var rec=null,recId=null,micNote=null;
+function setText(id,text){st.ans[id]=text;save();var ta=document.getElementById("ta-"+id);if(ta)ta.value=text}
+function micStop(){if(rec){try{rec.stop()}catch(e){}}}
+function micMsg(id,m){micNote={id:id,msg:m};updateMic()}
+function micStart(id){
+  if(!SR){micMsg(id,"Inspreken werkt in Chrome, Edge en Safari. Je kunt ook het microfoontje op je toetsenbord gebruiken.");return}
+  micStop();
+  var r=new SR();r.lang="nl-NL";r.continuous=true;r.interimResults=true;
+  var base=st.ans[id]||"";if(base&&!/\s$/.test(base))base+=" ";
+  var fin="";
+  r.onresult=function(e){var interim="";for(var i=e.resultIndex;i<e.results.length;i++){var t=e.results[i][0].transcript;if(e.results[i].isFinal)fin+=t.trim()+" ";else interim+=t}setText(id,(base+fin+interim).replace(/\s+$/,""))};
+  r.onerror=function(e){
+    var m="Het inspreken is gestopt.";
+    if(e.error==="not-allowed"||e.error==="service-not-allowed")m="De microfoon mag niet worden gebruikt. Geef de browser toestemming, of open de app in Chrome of Safari. Je kunt ook het microfoontje op je toetsenbord gebruiken.";
+    else if(e.error==="no-speech")m="Ik hoor niets. Probeer het nog eens.";
+    else if(e.error==="audio-capture")m="Geen microfoon gevonden.";
+    else if(e.error==="network")m="Spraakherkenning heeft internet nodig.";
+    micNote={id:id,msg:m};
+  };
+  r.onend=function(){if(rec===r){rec=null;recId=null}updateMic()};
+  rec=r;recId=id;micNote=null;
+  try{r.start()}catch(err){rec=null;recId=null;micMsg(id,"Starten lukt niet. Probeer het nog eens.");return}
+  updateMic();
+}
+function updateMic(){
+  var bs=document.querySelectorAll("[data-mic]");
+  for(var i=0;i<bs.length;i++){
+    var b=bs[i],id=b.getAttribute("data-mic"),on=recId===id;
+    b.classList.toggle("listening",on);
+    b.setAttribute("aria-pressed",on?"true":"false");
+    b.textContent=on?"⏹️ Stop":"🎤 Inspreken";
+    var m=document.getElementById("micmsg-"+id);
+    if(m)m.textContent=on?"Aan het luisteren. Spreek maar.":(micNote&&micNote.id===id?micNote.msg:"");
+  }
+}
+
+/* Toetsen */
 var quiz=null;
 function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
-function startQuiz(){
-  quiz={order:shuffle(QUIZ.map(function(_,i){return i})),n:0,score:0,picked:null,wrong:[],opts:{}};
-  QUIZ.forEach(function(q,i){var idx=shuffle(q.o.map(function(_,k){return k}));quiz.opts[i]=idx});
+function startQuiz(set){
+  var qs=QUIZZES[set].qs;
+  quiz={set:set,order:shuffle(qs.map(function(_,i){return i})),n:0,score:0,picked:null,wrong:[],opts:{}};
+  qs.forEach(function(q,i){quiz.opts[i]=shuffle(q.o.map(function(_,k){return k}))});
   st.view="quiz";render();
 }
 
-function go(view,i){st.view=view;if(i!==undefined)st.i=i;try{history.replaceState(null,"","#"+(view==="step"?"stap-"+(st.i+1):view==="summary"?"samenvatting":"toets"))}catch(e){}render();window.scrollTo(0,0)}
+function go(view,i){micStop();st.view=view;if(i!==undefined)st.i=i;if(view==="quiz")quiz=null;try{history.replaceState(null,"","#"+(view==="step"?"stap-"+(st.i+1):view==="summary"?"samenvatting":"toets"))}catch(e){}render();window.scrollTo(0,0)}
 
 function renderNav(){
   var h="";
@@ -270,7 +373,7 @@ function renderNav(){
   });
   h+='<div class="sep"></div>';
   h+='<button data-go="summary" aria-current="'+(st.view==="summary")+'"><span class="n">📝</span><span class="t">Jouw samenvatting</span></button>';
-  h+='<button data-go="quiz" aria-current="'+(st.view==="quiz")+'"><span class="n">🎓</span><span class="t">Oefentoets</span></button>';
+  h+='<button data-go="quiz" aria-current="'+(st.view==="quiz")+'"><span class="n">🎓</span><span class="t">Oefentoetsen</span></button>';
   document.getElementById("nav").innerHTML=h;
   document.getElementById("bar").style.width=Math.round(doneCount()/STEPS.length*100)+"%";
 }
@@ -280,8 +383,9 @@ function renderStep(){
   s.qs.forEach(function(q,qi){
     var id=qid(st.i,qi),shown=st.shown[id];
     h+='<div class="q"><span class="qno">💭 VRAAG '+(qi+1)+'</span><p class="qtext">'+esc(q.q)+'</p>';
-    h+='<textarea id="ta-'+id+'" data-id="'+id+'" placeholder="Schrijf in je eigen woorden wat je weet. Dit komt in jouw samenvatting.">'+esc(st.ans[id]||"")+'</textarea>';
-    h+='<div class="row"><button class="btn" data-hint="'+id+'">🔎 Hint</button><button class="btn primary" data-reveal="'+id+'">'+(shown?"Modelantwoord verbergen":"Vergelijk met modelantwoord")+'</button></div>';
+    h+='<textarea id="ta-'+id+'" data-id="'+id+'" placeholder="Schrijf of spreek in wat je weet, in je eigen woorden. Dit komt in jouw samenvatting.">'+esc(st.ans[id]||"")+'</textarea>';
+    h+='<div class="row"><button class="btn mic" data-mic="'+id+'" aria-pressed="false">🎤 Inspreken</button><button class="btn" data-hint="'+id+'">🔎 Hint</button><button class="btn primary" data-reveal="'+id+'">'+(shown?"Modelantwoord verbergen":"Vergelijk met modelantwoord")+'</button></div>';
+    h+='<div class="progress-mono micmsg" id="micmsg-'+id+'" aria-live="polite"></div>';
     h+='<div id="hint-'+id+'" class="hint" hidden>'+esc(q.h)+'</div>';
     if(shown){
       var checked=st.keys[id]||[];
@@ -319,21 +423,26 @@ function renderSummary(){
     });
     h+='</div>';
   });
-  h+='<div class="row"><button class="btn" id="copy">Kopieer samenvatting</button><button class="btn primary" data-go="quiz">Naar de oefentoets</button><span class="progress-mono" id="copied" aria-live="polite">'+mine+' van '+total+' antwoorden zelf geschreven</span></div></div>';
+  h+='<div class="row"><button class="btn" id="copy">Kopieer samenvatting</button><button class="btn primary" data-go="quiz">Naar de oefentoetsen</button><span class="progress-mono" id="copied" aria-live="polite">'+mine+' van '+total+' antwoorden zelf geschreven</span></div></div>';
   return h;
 }
 
-function renderQuizIntro(){
-  var h='<div class="card">'+hero("🎓","sand","Oefentoets",QUIZ.length+" vragen over het boek","Kies steeds één antwoord. Je ziet meteen of het goed is, met uitleg. Aan het eind zie je welke stappen je nog even moet herhalen.");
-  if(st.best!==null)h+='<p class="progress-mono" style="margin-top:14px">Beste score tot nu toe: '+st.best+' van '+QUIZ.length+'</p>';
-  h+='<div class="row"><button class="btn primary" id="startq">Start de toets</button></div></div>';
+function renderPicker(){
+  var h='<div class="card">'+hero("🎓","sand","Oefentoetsen","Kies een toets","Drie toetsen met meerkeuzevragen. Je ziet meteen of je antwoord goed is, met uitleg. Aan het eind zie je welke stappen je nog moet herhalen.");
+  h+='<div class="tests">';
+  QUIZZES.forEach(function(z,i){
+    var b=st.best[i];
+    h+='<div class="pick" style="background:var(--'+z.col+')"><span class="emoji" aria-hidden="true">'+z.emoji+'</span><div class="pk"><div class="eyebrow">'+esc(z.name)+' · '+z.qs.length+' vragen</div><h3>'+esc(z.title)+'</h3><p class="sub">'+esc(z.desc)+'</p>'+(b!==undefined?'<p class="progress-mono">Beste score: '+b+' van '+z.qs.length+'</p>':'')+'</div><button class="btn primary" data-start="'+i+'">Start</button></div>';
+  });
+  h+='</div></div>';
   return h;
 }
 function renderQuiz(){
-  if(!quiz)return renderQuizIntro();
+  if(!quiz)return renderPicker();
+  var z=QUIZZES[quiz.set];
   if(quiz.n>=quiz.order.length)return renderResult();
-  var qi=quiz.order[quiz.n],q=QUIZ[qi],idx=quiz.opts[qi],letters=["A","B","C","D"];
-  var h='<div class="card"><div class="eyebrow">Vraag '+(quiz.n+1)+' van '+quiz.order.length+'</div><h2>'+esc(q.q)+'</h2><div class="opts" role="group" aria-label="Antwoorden">';
+  var qi=quiz.order[quiz.n],q=z.qs[qi],idx=quiz.opts[qi],letters=["A","B","C","D"];
+  var h='<div class="card"><div class="eyebrow">'+z.emoji+' '+esc(z.name)+' · Vraag '+(quiz.n+1)+' van '+quiz.order.length+'</div><h2 style="margin-top:8px">'+esc(q.q)+'</h2><div class="opts" role="group" aria-label="Antwoorden">';
   idx.forEach(function(k,pos){
     var cls="opt",answered=quiz.picked!==null;
     if(answered){if(k===q.c)cls+=" right";else if(k===quiz.picked)cls+=" wrong"}
@@ -348,15 +457,15 @@ function renderQuiz(){
   return h;
 }
 function renderResult(){
-  var n=QUIZ.length,sc=quiz.score,pct=Math.round(sc/n*100);
+  var z=QUIZZES[quiz.set],n=z.qs.length,sc=quiz.score,pct=Math.round(sc/n*100);
   var msg=pct>=85?"Sterk. Je kent het boek goed.":pct>=60?"Redelijk. Herhaal de stappen hieronder nog even.":"Nog even oefenen. Loop de stappen hieronder opnieuw door.";
-  var h='<div class="card">'+hero(pct>=60?"🌿":"🌧️",pct>=60?"sage":"rose","Resultaat",sc+" van "+n+" goed",msg);
+  var h='<div class="card">'+hero(pct>=60?"🌿":"🌧️",pct>=60?"sage":"rose",esc(z.name)+" · Resultaat",sc+" van "+n+" goed",msg);
   if(quiz.wrong.length){
     h+='<div class="wrongs">';
-    quiz.wrong.forEach(function(qi){var q=QUIZ[qi];h+='<div><b>'+esc(q.q)+'</b>Goed antwoord: '+esc(q.o[q.c])+'.<br><button class="link" data-go="step" data-i="'+q.s+'">Herhaal stap '+(q.s+1)+': '+esc(STEPS[q.s].t)+'</button></div>'});
+    quiz.wrong.forEach(function(qi){var q=z.qs[qi];h+='<div><b>'+esc(q.q)+'</b>Goed antwoord: '+esc(q.o[q.c])+'.<br><button class="link" data-go="step" data-i="'+q.s+'">Herhaal stap '+(q.s+1)+': '+esc(STEPS[q.s].t)+'</button></div>'});
     h+='</div>';
   }
-  h+='<div class="row"><button class="btn primary" id="startq">Toets opnieuw</button><button class="btn" data-go="summary">Naar mijn samenvatting</button></div>';
+  h+='<div class="row"><button class="btn primary" data-start="'+quiz.set+'">Deze toets opnieuw</button><button class="btn" data-go="quiz">Andere toets</button><button class="btn" data-go="summary">Naar mijn samenvatting</button></div>';
   h+='<div class="q"><h3>🗣️ Oefen ook hardop voor het gesprek</h3><p class="sub">Beantwoord deze vragen in je eigen woorden en noem steeds een voorbeeld uit het boek.</p><ol class="talk">';
   TALK.forEach(function(t){h+='<li>'+esc(t)+'</li>'});
   h+='</ol></div></div>';
@@ -367,11 +476,13 @@ function render(){
   renderNav();
   var m=document.getElementById("main");
   m.innerHTML=st.view==="step"?renderStep():st.view==="summary"?renderSummary():renderQuiz();
+  updateMic();
 }
 
 document.addEventListener("click",function(e){
-  var t=e.target.closest("[data-go],[data-hint],[data-reveal],[data-pick],#startq,#nextq,#copy");
+  var t=e.target.closest("[data-go],[data-hint],[data-reveal],[data-pick],[data-start],[data-mic],#nextq,#copy");
   if(!t)return;
+  if(t.hasAttribute("data-mic")){var mid=t.getAttribute("data-mic");if(recId===mid)micStop();else micStart(mid);return}
   if(t.hasAttribute("data-go")){
     var v=t.getAttribute("data-go");
     if(v==="quiz"){go("quiz");return}
@@ -379,18 +490,18 @@ document.addEventListener("click",function(e){
   }
   if(t.hasAttribute("data-hint")){var el=document.getElementById("hint-"+t.getAttribute("data-hint"));el.hidden=!el.hidden;return}
   if(t.hasAttribute("data-reveal")){var id=t.getAttribute("data-reveal");st.shown[id]=!st.shown[id];save();var y=window.scrollY;render();window.scrollTo(0,y);return}
-  if(t.id==="startq"){startQuiz();window.scrollTo(0,0);return}
-  if(t.id==="nextq"){quiz.n++;quiz.picked=null;if(quiz.n>=quiz.order.length&&(st.best===null||quiz.score>st.best)){st.best=quiz.score;save()}render();window.scrollTo(0,0);return}
+  if(t.hasAttribute("data-start")){startQuiz(parseInt(t.getAttribute("data-start"),10));window.scrollTo(0,0);return}
+  if(t.id==="nextq"){quiz.n++;quiz.picked=null;if(quiz.n>=quiz.order.length){var prev=st.best[quiz.set];if(prev===undefined||quiz.score>prev){st.best[quiz.set]=quiz.score;save()}}render();window.scrollTo(0,0);return}
   if(t.hasAttribute("data-pick")){
     if(quiz.picked!==null)return;
     var k=parseInt(t.getAttribute("data-pick"),10),qi=quiz.order[quiz.n];
     quiz.picked=k;
-    if(k===QUIZ[qi].c)quiz.score++;else quiz.wrong.push(qi);
+    if(k===QUIZZES[quiz.set].qs[qi].c)quiz.score++;else quiz.wrong.push(qi);
     render();return;
   }
   if(t.id==="copy"){
     var txt=summaryText(),msg=document.getElementById("copied");
-    var fallback=function(){msg.textContent="Kopiëren lukt hier niet. Selecteer de tekst zelf.";};
+    var fallback=function(){msg.textContent="Kopiëren lukt hier niet. Selecteer de tekst zelf."};
     try{navigator.clipboard.writeText(txt).then(function(){msg.textContent="Gekopieerd."},fallback)}catch(err){fallback()}
   }
 });
@@ -417,6 +528,7 @@ document.addEventListener("change",function(e){
   else if(hsh==="toets")st.view="quiz";
   render();
 })();
+
 </script>
 </body>
 </html>
