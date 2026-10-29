@@ -126,6 +126,26 @@ textarea{width:100%;min-height:110px;resize:vertical;font:inherit;color:var(--fg
 @keyframes pulse{50%{opacity:.55}}
 .mic.listening{animation:pulse 1.4s infinite}
 @media (prefers-reduced-motion:reduce){.mic.listening{animation:none}}
+.review{margin-top:16px;display:grid;gap:12px}
+.rbox{padding:14px 16px;border-radius:12px;background:var(--blue)}
+.rbox p{margin:6px 0 0}
+.rbox.ok{background:var(--sage)}
+.rbox.warn{background:var(--sand)}
+.rbox.big-r{display:flex;gap:16px;align-items:center;background:var(--lav)}
+.score-big{font:800 44px/1 var(--f-display);flex:none}
+.tips{margin:8px 0 0;padding-left:20px}
+.tips li{margin-bottom:4px}
+.rstep{border:1px solid var(--line);border-radius:10px;background:var(--bg);padding:0 14px}
+.rstep+.rstep{margin-top:-4px}
+.rstep summary{cursor:pointer;display:flex;justify-content:space-between;gap:10px;padding:12px 0;font-weight:600}
+.rstep .rp{font:500 13px var(--f-mono);color:var(--muted);white-space:nowrap}
+.rq{padding:10px 0;border-top:1px solid var(--line)}
+.rq p{margin:4px 0}
+.rqt{font-weight:600}
+.rq .g{color:var(--ok)}
+.rq .m{color:var(--fg)}
+.muted{color:var(--muted);font-size:15px}
+@media (max-width:520px){.rbox.big-r{flex-direction:column;align-items:flex-start}}
 html{color-scheme:light}
 body{margin:0}
 [hidden]{display:none!important}
@@ -306,7 +326,7 @@ var TALK=[
 ];
 
 var KEY="traangas-studiehulp-v2";
-var st={view:"step",i:0,ans:{},shown:{},keys:{},best:{}};
+var st={view:"step",i:0,ans:{},shown:{},keys:{},best:{},review:false};
 try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);st.ans=p.ans||{};st.shown=p.shown||{};st.keys=p.keys||{};st.best=p.best||{}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({ans:st.ans,shown:st.shown,keys:st.keys,best:st.best}))}catch(e){}}
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
@@ -363,7 +383,7 @@ function startQuiz(set){
   st.view="quiz";render();
 }
 
-function go(view,i){micStop();st.view=view;if(i!==undefined)st.i=i;if(view==="quiz")quiz=null;try{history.replaceState(null,"","#"+(view==="step"?"stap-"+(st.i+1):view==="summary"?"samenvatting":"toets"))}catch(e){}render();window.scrollTo(0,0)}
+function go(view,i){micStop();st.view=view;if(i!==undefined)st.i=i;if(view==="quiz")quiz=null;if(view!=="summary")st.review=false;try{history.replaceState(null,"","#"+(view==="step"?"stap-"+(st.i+1):view==="summary"?"samenvatting":"toets"))}catch(e){}render();window.scrollTo(0,0)}
 
 function renderNav(){
   var h="";
@@ -411,6 +431,102 @@ function summaryText(){
   });
   return out;
 }
+
+/* Nakijken */
+var STOP=["naar","voor","door","zijn","haar","met","van","een","het","dat","die","dan","ook","niet","maar","bij","tot","over","deze","wordt","worden","geen","nog","als","hem","hun","zich","daar","wel","meer","heel"];
+function sig(t){return (String(t).toLowerCase().match(/[a-zà-ÿ0-9]+/g)||[]).filter(function(w){return w.length>=4&&STOP.indexOf(w)<0})}
+function hit(text,kp){
+  var ws=sig(kp);
+  if(!ws.length)return text.indexOf(kp.toLowerCase())>-1;
+  var n=0;ws.forEach(function(w){if(text.indexOf(w.slice(0,Math.min(w.length,6)))>-1)n++});
+  return n/ws.length>=0.5;
+}
+function analyse(){
+  var r={steps:[],totalQ:0,answered:0,kp:0,kpHit:0};
+  STEPS.forEach(function(s,si){
+    var st2={t:s.t,qs:[],kp:0,kpHit:0,unans:0};
+    s.qs.forEach(function(q,qi){
+      var id=qid(si,qi),raw=(st.ans[id]||"").trim(),txt=raw.toLowerCase();
+      r.totalQ++;
+      var o={q:q.q,answered:!!raw,words:raw?raw.split(/\s+/).length:0,got:[],miss:[]};
+      if(!raw){st2.unans++}
+      else{
+        r.answered++;
+        q.k.forEach(function(k){if(hit(txt,k))o.got.push(k);else o.miss.push(k)});
+        st2.kp+=q.k.length;st2.kpHit+=o.got.length;r.kp+=q.k.length;r.kpHit+=o.got.length;
+      }
+      st2.qs.push(o);
+    });
+    r.steps.push(st2);
+  });
+  return r;
+}
+function pct(a,b){return b?Math.round(a/b*100):0}
+function reviewText(r){
+  var t="Nakijken: "+r.answered+" van "+r.totalQ+" vragen zelf beantwoord, "+pct(r.kpHit,r.kp)+"% van de kernpunten genoemd.\n\n";
+  r.steps.forEach(function(s){
+    t+=s.t+"\n";
+    s.qs.forEach(function(o){
+      t+="- "+o.q+"\n";
+      if(!o.answered)t+="  Nog niet zelf beantwoord.\n";
+      else{
+        if(o.got.length)t+="  Genoemd: "+o.got.join("; ")+"\n";
+        if(o.miss.length)t+="  Nog toevoegen: "+o.miss.join("; ")+"\n";
+      }
+    });
+    t+="\n";
+  });
+  return t;
+}
+function renderReview(){
+  var r=analyse(),p=pct(r.kpHit,r.kp);
+  var h='<div class="review">';
+  if(!r.answered){
+    h+='<div class="rbox"><b>Je hebt nog geen antwoorden zelf geschreven.</b><p>Begin bij stap 1 en schrijf of spreek je antwoord in. Daarna kan ik het nakijken.</p><button class="link" data-go="step" data-i="0">Naar stap 1</button></div></div>';
+    return h;
+  }
+  var msg=p>=80?"Sterk. Je noemt bijna alle belangrijke punten.":p>=50?"Een goed begin. Je mist nog een aantal kernpunten.":"Je samenvatting mist nog veel kernpunten. Vul hem aan met de tips hieronder.";
+  h+='<div class="rbox big-r"><div class="score-big">'+p+'%</div><div><b>'+msg+'</b><p>Je hebt '+r.answered+' van '+r.totalQ+' vragen zelf beantwoord en '+r.kpHit+' van '+r.kp+' kernpunten genoemd in die antwoorden.</p></div></div>';
+  var strong=[],weak=[];
+  r.steps.forEach(function(s,i){
+    if(s.kp&&pct(s.kpHit,s.kp)>=80&&!s.unans)strong.push(s.t);
+    if(s.unans||(s.kp&&pct(s.kpHit,s.kp)<60))weak.push({i:i,t:s.t,why:s.unans?"nog niet alles beantwoord":pct(s.kpHit,s.kp)+"% van de kernpunten"});
+  });
+  if(strong.length)h+='<div class="rbox ok"><b>👍 Sterk</b><p>'+strong.map(esc).join(", ")+'.</p></div>';
+  if(weak.length){
+    h+='<div class="rbox warn"><b>🔧 Aanvullen</b><ul class="tips">';
+    weak.forEach(function(w){h+='<li><button class="link" data-go="step" data-i="'+w.i+'">'+esc(w.t)+'</button> ('+esc(w.why)+')</li>'});
+    h+='</ul></div>';
+  }
+  h+='<div class="rbox"><b>💡 Tips voor een betere samenvatting</b><ul class="tips">';
+  h+='<li>Noem bij elk personage wie het is, wat het wil en wat er verandert.</li>';
+  h+='<li>Geef bij een thema steeds een voorbeeld uit het boek, bijvoorbeeld een scène.</li>';
+  h+='<li>Schrijf in je eigen woorden. Een toetsvraag vraagt vaak waarom iemand iets doet.</li>';
+  h+='<li>Houd data en namen bij de hand: 25 januari, 11 februari, Omar, Layla, Kimberly.</li>';
+  h+='<li>Oefen daarna hardop met de gespreksvragen bij de oefentoetsen.</li></ul></div>';
+  h+='<h3 style="margin:18px 0 8px">Per stap</h3>';
+  r.steps.forEach(function(s,i){
+    var sp=s.kp?pct(s.kpHit,s.kp)+"%":"geen antwoord";
+    h+='<details class="rstep"><summary><span>'+DECO[i][0]+' '+esc(s.t)+'</span><span class="rp">'+sp+'</span></summary>';
+    s.qs.forEach(function(o){
+      h+='<div class="rq"><p class="rqt">'+esc(o.q)+'</p>';
+      if(!o.answered)h+='<p class="muted">Nog niet zelf beantwoord. Probeer het eerst zelf.</p>';
+      else{
+        if(o.got.length)h+='<p class="g">✅ Genoemd: '+o.got.map(esc).join("; ")+'</p>';
+        if(o.miss.length)h+='<p class="m">➕ Voeg toe: '+o.miss.map(esc).join("; ")+'</p>';
+        if(!o.miss.length)h+='<p class="g">Alle kernpunten staan erin.</p>';
+        if(o.words<15)h+='<p class="muted">Je antwoord is kort ('+o.words+' woorden). Werk het uit met een voorbeeld uit het boek.</p>';
+      }
+      h+='</div>';
+    });
+    h+='</details>';
+  });
+  h+='<p class="muted" style="margin-top:14px">Dit is een automatische controle op kernpunten in je woorden. Een goed antwoord kan het toch anders zeggen, dus lees ook het modelantwoord. Het is geen oordeel van je docent.</p>';
+  h+='<div class="row"><button class="btn" id="copyrev">Kopieer feedback</button><span class="progress-mono" id="copiedrev" aria-live="polite"></span></div>';
+  h+='</div>';
+  return h;
+}
+
 function renderSummary(){
   var h='<div class="card">'+hero("📝","lav","Jouw samenvatting","Zo heb je het boek samengevat","Waar je zelf iets hebt ingevuld, staat jouw tekst. Waar niet, zie je het modelantwoord. Lees het één keer hardop door.");
   var mine=0,total=0;
@@ -423,7 +539,8 @@ function renderSummary(){
     });
     h+='</div>';
   });
-  h+='<div class="row"><button class="btn" id="copy">Kopieer samenvatting</button><button class="btn primary" data-go="quiz">Naar de oefentoetsen</button><span class="progress-mono" id="copied" aria-live="polite">'+mine+' van '+total+' antwoorden zelf geschreven</span></div></div>';
+  h+='<div class="row"><button class="btn" id="copy">Kopieer samenvatting</button><button class="btn primary" data-go="quiz">Naar de oefentoetsen</button><span class="progress-mono" id="copied" aria-live="polite">'+mine+' van '+total+' antwoorden zelf geschreven</span></div>';
+  h+='<div class="q" id="review-box"><h3>🔍 Laat je samenvatting nakijken</h3><p class="sub">Ik vergelijk jouw antwoorden met de kernpunten uit het boek en geef tips om aan te vullen.</p><div class="row"><button class="btn primary" id="review">'+(st.review?"Opnieuw nakijken":"Controleer mijn samenvatting")+'</button></div><div id="review-out">'+(st.review?renderReview():'')+'</div></div></div>';
   return h;
 }
 
@@ -480,7 +597,7 @@ function render(){
 }
 
 document.addEventListener("click",function(e){
-  var t=e.target.closest("[data-go],[data-hint],[data-reveal],[data-pick],[data-start],[data-mic],#nextq,#copy");
+  var t=e.target.closest("[data-go],[data-hint],[data-reveal],[data-pick],[data-start],[data-mic],#nextq,#copy,#review,#copyrev");
   if(!t)return;
   if(t.hasAttribute("data-mic")){var mid=t.getAttribute("data-mic");if(recId===mid)micStop();else micStart(mid);return}
   if(t.hasAttribute("data-go")){
@@ -498,6 +615,13 @@ document.addEventListener("click",function(e){
     quiz.picked=k;
     if(k===QUIZZES[quiz.set].qs[qi].c)quiz.score++;else quiz.wrong.push(qi);
     render();return;
+  }
+  if(t.id==="review"){st.review=true;render();var ro=document.getElementById("review-out");if(ro)ro.scrollIntoView({behavior:"smooth",block:"start"});return}
+  if(t.id==="copyrev"){
+    var rm=document.getElementById("copiedrev"),rt=reviewText(analyse());
+    var fb2=function(){rm.textContent="Kopiëren lukt hier niet. Selecteer de tekst zelf."};
+    try{navigator.clipboard.writeText(rt).then(function(){rm.textContent="Gekopieerd."},fb2)}catch(err){fb2()}
+    return;
   }
   if(t.id==="copy"){
     var txt=summaryText(),msg=document.getElementById("copied");
