@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Traangas Studiehulp</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap">
+<style>
+/* Layout: smalle rail met stappen links (op telefoon een scrollbare strook), een leesbare kolom rechts. */
+:root{
+  --bg:#ECEEF0; --surface:#F8F8F9; --fg:#2A2E35; --muted:#5F6978; --line:#D3D7DD;
+  --accent:#9C5460; --accent-soft:#F0DEE1; --btn:#E4BFC5;
+  --ok:#4A7459; --ok-soft:#D8E8DE; --warn:#76602F; --warn-soft:#EFE5CE;
+  --rose:#EAD3D6; --sage:#D3E3D9; --blue:#D1DCE9; --sand:#EDE3CD; --lav:#DDD7EA;
+  --f-display:'Bricolage Grotesque','Helvetica Neue',Arial,sans-serif;
+  --f-body:'Source Sans 3','Helvetica Neue',Arial,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A1D22; --surface:#23272E; --fg:#E6E4E1; --muted:#9AA1AD; --line:#343A43;
+    --accent:#D9A0AA; --accent-soft:#3A2D31; --btn:#5E4249;
+    --ok:#8CC5A3; --ok-soft:#24352C; --warn:#D8BD84; --warn-soft:#38301E;
+    --rose:#3A2D31; --sage:#243029; --blue:#252E3A; --sand:#332E22; --lav:#2E2A3A; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A1D22; --surface:#23272E; --fg:#E6E4E1; --muted:#9AA1AD; --line:#343A43;
+  --accent:#D9A0AA; --accent-soft:#3A2D31; --btn:#5E4249;
+  --ok:#8CC5A3; --ok-soft:#24352C; --warn:#D8BD84; --warn-soft:#38301E;
+  --rose:#3A2D31; --sage:#243029; --blue:#252E3A; --sand:#332E22; --lav:#2E2A3A; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:17px/1.55 var(--f-body);padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1000px;margin:0 auto}
+header{padding-block:28px 18px}
+.eyebrow{font:500 12px/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font:800 clamp(30px,6vw,46px)/1.05 var(--f-display);margin:10px 0 6px;text-wrap:balance;letter-spacing:-.01em}
+h2{font:700 clamp(22px,4vw,28px)/1.15 var(--f-display);margin:0 0 6px;text-wrap:balance}
+h3{font:700 18px/1.25 var(--f-display);margin:0}
+.sub{color:var(--muted);margin:0;max-width:60ch}
+.bar{height:6px;background:var(--line);border-radius:3px;margin-top:18px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.grid{display:grid;grid-template-columns:230px minmax(0,1fr);gap:28px;align-items:start}
+nav{position:sticky;top:12px;display:flex;flex-direction:column;gap:2px}
+nav button{all:unset;cursor:pointer;display:flex;gap:10px;align-items:baseline;padding:8px 10px;border-radius:6px;font-size:15px;line-height:1.3}
+nav button:hover{background:var(--surface)}
+nav button:focus-visible,.btn:focus-visible,.opt:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+nav button .n{font-size:17px;min-width:24px;line-height:1.2}
+nav button[aria-current="true"]{background:var(--lav);font-weight:600}
+nav button.done .t::after{content:" ✓";color:var(--ok)}
+nav .sep{height:1px;background:var(--line);margin:8px 10px}
+main{min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(18px,4vw,30px)}
+.hero{display:flex;gap:14px;align-items:center;padding:16px 18px;border-radius:12px;margin-bottom:6px}
+.hero .emoji{font-size:34px;line-height:1;flex:none}
+.hero .sub{margin-top:2px}
+.hero .eyebrow{color:var(--fg);opacity:.7;margin-bottom:6px}
+.em{display:inline-block;min-width:1.6em}
+.q{margin-top:26px;padding-top:22px;border-top:1px solid var(--line)}
+.q:first-of-type{border-top:0;margin-top:20px;padding-top:0}
+.qtext{font:600 18px/1.35 var(--f-body);margin:0 0 10px}
+.qno{font:500 12px var(--f-mono);color:var(--accent);display:block;margin-bottom:4px;letter-spacing:.04em}
+textarea{width:100%;min-height:110px;resize:vertical;font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;line-height:1.5}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center}
+.btn{all:unset;cursor:pointer;box-sizing:border-box;padding:10px 18px;border-radius:8px;font:600 15px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.btn:hover{border-color:var(--fg)}
+.btn.primary{background:var(--btn);color:var(--fg);border-color:var(--btn)}
+.btn.primary:hover{filter:brightness(.96);border-color:var(--accent)}
+.btn[disabled]{opacity:.45;cursor:default}
+.hint{font-size:15px;margin-top:10px;padding:10px 12px;background:var(--sand);border-radius:10px;color:var(--fg)}
+.model{margin-top:14px;padding:16px;border-radius:10px;background:var(--blue)}
+.model .lab{font:500 12px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg);opacity:.75;margin-bottom:6px}
+.model p{margin:0 0 10px}
+.keys{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.keys label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:16px}
+.keys input{margin-top:5px;accent-color:var(--accent);width:16px;height:16px;flex:none}
+.score-chip{font:500 13px var(--f-mono);color:var(--muted)}
+.foot{display:flex;justify-content:space-between;gap:10px;margin-top:28px;flex-wrap:wrap}
+.sum-block{padding:16px 0;border-top:1px solid var(--line)}
+.sum-block:first-of-type{border-top:0}
+.sum-block h3{margin-bottom:6px}
+.sum-block p{margin:0;white-space:pre-wrap}
+.tag{display:inline-block;font:500 11px var(--f-mono);letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--sand);color:var(--fg);margin-bottom:6px}
+.tag.mine{background:var(--sage);color:var(--fg)}
+.opts{display:grid;gap:10px;margin-top:14px}
+.opt{all:unset;cursor:pointer;box-sizing:border-box;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--bg);display:flex;gap:12px}
+.opt:hover{border-color:var(--fg)}
+.opt .l{font:500 13px var(--f-mono);color:var(--muted);padding-top:2px}
+.opt.right{border-color:var(--ok);background:var(--sage)}
+.opt.wrong{border-color:var(--accent);background:var(--rose)}
+.opt[aria-disabled="true"]{cursor:default}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--lav)}
+.big{font:800 64px/1 var(--f-display);color:var(--accent);margin:8px 0}
+.wrongs{display:grid;gap:12px;margin-top:16px}
+.wrongs div{padding:12px 14px;background:var(--rose);border-radius:10px}
+.wrongs b{display:block;margin-bottom:4px}
+.link{all:unset;cursor:pointer;color:var(--accent);text-decoration:underline;font-size:15px}
+.talk{margin:14px 0 0;padding-left:20px}
+.talk li{margin-bottom:6px}
+.progress-mono{font:500 13px var(--f-mono);color:var(--muted)}
+@media (max-width:760px){
+  .grid{grid-template-columns:minmax(0,1fr);gap:16px}
+  nav{position:static;flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:6px}
+  nav button{white-space:nowrap;border:1px solid var(--line);background:var(--surface)}
+  nav .sep{display:none}
+  nav button .t{display:none}
+  nav button[aria-current="true"] .t{display:inline}
+}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+html{color-scheme:light}
+body{margin:0}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">📚 Nederlands · boekverslag en toets</div>
+    <h1>Dansen tussen wolken van traangas</h1>
+    <p class="sub">🌫️ Monique Samuel. Je bouwt de samenvatting zelf op door de vragen te beantwoorden, vergelijkt met het modelantwoord en sluit af met een oefentoets.</p>
+    <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+  </header>
+  <div class="grid">
+    <nav id="nav" aria-label="Stappen"></nav>
+    <main id="main"></main>
+  </div>
+</div>
+
+<script>
+var STEPS=[
+{t:"Het boek in het kort",intro:"Begin met het grote plaatje: waar, wanneer en wie.",qs:[
+ {q:"Waar en wanneer speelt het verhaal zich af? Welke gebeurtenis in het land staat centraal?",h:"Denk aan de president en aan de Corniche in Alexandrië.",
+  a:"Het verhaal speelt in Egypte, vooral in Alexandrië en Caïro, in januari en februari 2011. Centraal staat de volksopstand tegen president Hosni Mubarak. Op 11 februari 2011 treedt hij af.",
+  k:["Egypte (Alexandrië en Caïro)","Januari en februari 2011","Opstand tegen president Mubarak","Mubarak valt op 11 februari"]},
+ {q:"Wie schreef het boek en wat voor achtergrond heeft de schrijfster?",h:"Achter in het boek staat een stukje over haar.",
+  a:"Monique Samuel (1989) is schrijver, opiniemaker en politicoloog. Haar vader is Egyptisch en haar moeder Nederlands. Daardoor kon ze zich goed inleven in jongeren in Egypte en in Nederland.",
+  k:["Monique Samuel","Politicoloog en schrijver","Egyptische vader, Nederlandse moeder"]}
+]},
+{t:"Mohammed en Abdelrahman",intro:"Twee vrienden uit Alexandrië die heel verschillend zijn.",qs:[
+ {q:"Wie is Mohammed en wat is zijn grote droom?",h:"Wat doet hij graag op de Corniche en voor de spiegel?",
+  a:"Mohammed is een jongen uit Alexandrië, zoon van kruidenier Sayed Ibrahim. Hij danst graag en droomt ervan danser te worden. Dansen is voor hem een manier om vrij te zijn, maar zijn omgeving is streng en bang.",
+  k:["Zoon van de kruidenier Sayed Ibrahim","Danst graag","Wil danser worden","Zijn omgeving is streng"]},
+ {q:"Wie is Abdelrahman en waarin verschilt hij van Mohammed?",h:"Denk aan voetbal, geloof en zijn vader.",
+  a:"Abdelrahman is Mohammeds beste vriend en de zoon van een apotheker. Hij is serieus, gelovig en goed in voetbal. Mohammed is losser en danst liever. Abdelrahman raakt betrokken bij de imam en later bij een groep die demonstreert.",
+  k:["Beste vriend van Mohammed","Zoon van de apotheker","Serieus, gelovig, voetballer","Raakt betrokken bij de groep"]}
+]},
+{t:"Samya",intro:"Een tweede hoofdpersoon, met een liefde die niet zomaar mag.",qs:[
+ {q:"Wie is Samya en wat is er met haar vader gebeurd?",h:"Het boek opent met haar. Wat hangt er in haar kamer?",
+  a:"Samya is een christelijk meisje in Alexandrië. Haar vader is drie jaar geleden overleden na een ongeluk met een motor, en haar oom Naguib bracht haar naar de stad aan zee. Ze mist hem nog elke dag. Ze loopt vaak langs de winkel van Sayed in de hoop Mohammed te zien.",
+  k:["Christelijk meisje","Vader overleden na ongeluk met een motorrijder","Oom Naguib, verhuizing naar Alexandrië","Verliefd op Mohammed"]},
+ {q:"Waarom is de liefde tussen Samya en Mohammed moeilijk?",h:"Denk aan het woord haram en aan hun geloof.",
+  a:"Mohammed is moslim en Samya is christen. In hun buurt wordt een relatie tussen een moslim en een christen niet geaccepteerd. Daarom houden ze het geheim en zijn ze bang voor wat anderen zeggen. Toch gaan ze op date en wandelen ze langs de zee.",
+  k:["Verschillende religie","Niet geaccepteerd in de buurt","Ze houden het geheim","Toch gaan ze op date"]}
+]},
+{t:"Layla en haar blog",intro:"Het verhaal heeft ook een stem op internet.",qs:[
+ {q:"Wie is Layla en wat doet ze online?",h:"Ze heeft een blog onder een andere naam.",
+  a:"Layla is de jongere zus van Mohammed. Ze is een computernerd en schrijft in het Engels een anonieme blog, Confessions of an Egyptian Nerd. Daarin schrijft ze over het leven in Egypte, haar familie en de politiek. Haar eerste blogpost is van 21 januari 2011.",
+  k:["Zus van Mohammed","Computernerd","Anonieme blog in het Engels","Eerste post 21 januari 2011"]},
+ {q:"Waarom doet Layla zich voor als Joyce uit Texas?",h:"Wie kan er meelezen als je kritiek schrijft op de regering?",
+  a:"Layla is bang voor de Egyptische veiligheidsdiensten. Wie kritiek schrijft op de regering kan gevaar lopen. Daarom verzint ze een andere identiteit, Joyce uit Texas, en verbergt ze dat ze uit Egypte schrijft. Haar vader mag het niet weten.",
+  k:["Bang voor de geheime dienst","Kritiek op de regering is gevaarlijk","Verzonnen identiteit: Joyce uit Texas"]},
+ {q:"Wie is Kimberly en welke rol heeft ze?",h:"Ze reageert op de blog en chat met Layla.",
+  a:"Kimberly is een Amerikaanse studente uit Los Angeles. Ze leest de blog, reageert en chat met Layla via Skype en chat. Voor Layla is ze een virtuele vriendin die vragen stelt over de gebeurtenissen en laat zien hoe anders haar leven is.",
+  k:["Studente uit Los Angeles","Reageert op de blog","Chat en Skype met Layla","Contrast tussen hun levens"]}
+]},
+{t:"De groep en Khaled Said",intro:"Hoe de jongens in de beweging terechtkomen.",qs:[
+ {q:"Wie was Khaled Said en waarom is hij belangrijk voor de opstand?",h:"Zoek de Facebookgroep 'Wij zijn allen ...'.",
+  a:"Khaled Said was een jonge man die door politieagenten werd vermoord. Foto's van zijn verminkte lichaam verspreidden zich over internet. De Facebookpagina 'Wij zijn allen Khaled Said' groeit snel en wordt het symbool van het verzet tegen het regime.",
+  k:["Jonge man vermoord door politie","Foto's op internet","Facebookpagina 'Wij zijn allen Khaled Said'","Symbool van het verzet"]},
+ {q:"Hoe raakt Abdelrahman bij de groep betrokken en wie is Omar?",h:"Omar spreekt hem aan na de gebeden.",
+  a:"Abdelrahman is gelovig en bezoekt de imam. Omar, de leider van een actieve cel van de beweging, spreekt hem aan: hij moet niet langer toekijken, maar meedoen. Zo komt Abdelrahman in de groep terecht, en later neemt hij Mohammed mee naar het café waar de groep vergadert.",
+  k:["Omar is de leider van de cel","Roept Abdelrahman op om mee te doen","Mohammed gaat later mee","Ze vergaderen in een café"]}
+]},
+{t:"Internet en social media",intro:"Een nieuwe manier om te organiseren, en een nieuwe manier om je te bedreigen.",qs:[
+ {q:"Welke rol spelen internet en social media in het verhaal?",h:"Denk aan Facebook, Twitter en wat er op 28 januari gebeurt.",
+  a:"Via Facebook en Twitter roepen jongeren op om te demonstreren, bijvoorbeeld op 25 januari, en delen ze nieuws en foto's. Layla blogt en chat met Kimberly. De regering sluit het internet en het mobiele netwerk af, rond 28 januari. Mensen verliezen elkaar uit het oog en kijken alleen nog naar de tv.",
+  k:["Oproepen voor demonstraties via Facebook en Twitter","Layla blogt en chat","De regering sluit het internet af","Mensen verliezen contact"]}
+]},
+{t:"De demonstraties",intro:"Van eerste protest tot chaos op straat.",qs:[
+ {q:"Wat gebeurt er op straat? Noem de belangrijkste dagen en hoe de politie reageert.",h:"25 januari en de vrijdag daarna, 'de dag van de woede'.",
+  a:"Op 25 januari is de eerste grote demonstratie, op een nationale vakantiedag ter ere van de politie. Op vrijdag 28 januari, de 'dag van de woede', gaat het hele land de straat op. De politie reageert hard met traangas, waterkanonnen en rubberkogels. Er vallen gewonden en doden. Samya blijft bang binnen met gesloten luiken, en de jongens zijn 'een druppel in een oceaan'.",
+  k:["25 januari: eerste grote demonstratie","28 januari: dag van de woede","Politie met traangas en kogels","Gewonden en doden","Samya blijft binnen"]}
+]},
+{t:"Het einde",intro:"Wat er uiteindelijk gebeurt.",qs:[
+ {q:"Hoe loopt het verhaal af voor het land en voor Mohammed?",h:"Lees nog eens de laatste blogpost, 'Mijn broer'.",
+  a:"Op 11 februari 2011 treedt Mubarak af en viert het volk feest. Mohammed wordt tijdens de protesten door de politie doodgeschoten. In de laatste blogpost 'Mijn broer' schrijft Layla over hem. Ze tekent met haar echte naam: niet Joyce uit Texas, maar Layla uit Alexandrië.",
+  k:["Mubarak treedt af (11 februari 2011)","Mohammed wordt doodgeschoten","Layla schrijft 'Mijn broer'","Ze onthult haar echte naam"]}
+]},
+{t:"Thema's",intro:"Dit is vaak waar je over praat bij een toets of gesprek.",qs:[
+ {q:"Welke thema's herken je? Geef bij elk thema een voorbeeld uit het boek.",h:"Denk aan vrijheid, angst, ouders, religie, internet en dromen.",
+  a:"Vrijheid tegenover angst: de ouders zijn bang voor de politie en houden hun kinderen binnen.\nJongeren tegenover ouderen: de jongeren durven te demonstreren.\nReligie: Mohammed en Samya, moslim en christen.\nSocial media: oproepen via Facebook en het afgesloten internet.\nDromen tegenover werkelijkheid: Mohammed wil dansen en wordt doodgeschoten.\nVriendschap: Mohammed en Abdelrahman.",
+  k:["Vrijheid en angst","Jongeren en ouders","Religie","Internet en social media","Dromen en werkelijkheid","Vriendschap"]}
+]},
+{t:"Opbouw en titel",intro:"De vorm van het boek, belangrijk voor de bespreking.",qs:[
+ {q:"Hoe is het boek opgebouwd? Welke soorten tekst komen voor?",h:"Kijk in de inhoudsopgave en bij hoofdstuk 'Hello Kimberly'.",
+  a:"Het boek wisselt tussen verschillende personages: Mohammed, Abdelrahman, Samya en Layla. Daartussen staan blogposts van Layla (met titel, datum en reacties) en chatgesprekken met tijdstippen. Verder zijn er twee intermezzo's. Zo ontstaat een mix van verhaal en documentair materiaal.",
+  k:["Verschillende personages en perspectieven","Blogposts met datum en reacties","Chatgesprekken","Twee intermezzo's"]},
+ {q:"Wat betekent de titel 'Dansen tussen wolken van traangas'?",h:"Welke twee werelden staan in de titel?",
+  a:"De titel combineert dans, wat Mohammed liefheeft en wat vrijheid betekent, met traangas, het geweld waarmee het regime protesten tegenhoudt. De jongeren dansen en dromen tussen het geweld van de straat door.",
+  k:["Dansen staat voor vrijheid en dromen","Traangas staat voor geweld en onderdrukking","De twee botsen"]}
+]}
+];
+
+var DECO=[["📖","blue"],["🩰","rose"],["💌","lav"],["💻","sage"],["✊","sand"],["📡","blue"],["🌫️","rose"],["🕯️","lav"],["🧩","sage"],["🗂️","sand"]];
+function hero(emoji,col,eyebrow,title,sub){return '<div class="hero" style="background:var(--'+col+')"><span class="emoji" aria-hidden="true">'+emoji+'</span><div><div class="eyebrow">'+eyebrow+'</div><h2>'+title+'</h2><p class="sub">'+sub+'</p></div></div>'}
+var QUIZ=[
+ {q:"Wie schreef het boek?",o:["Monique Samuel","Khaled Hosseini","Hosni Mubarak","Kimberly de Wit"],c:0,e:"Het boek is van Monique Samuel, politicoloog met een Egyptische vader en een Nederlandse moeder.",s:0},
+ {q:"In welk jaar speelt het verhaal?",o:["2005","2011","2015","2001"],c:1,e:"De blogposts hebben data in januari en februari 2011.",s:0},
+ {q:"Wat is Mohammeds grote droom?",o:["Voetballer worden","Dokter worden","Danser worden","Imam worden"],c:2,e:"Mohammed danst graag en droomt ervan danser te worden.",s:1},
+ {q:"Wat voor werk heeft Abdelrahmans vader?",o:["Hij is apotheker","Hij is imam","Hij is politieagent","Hij is kruidenier"],c:0,e:"Abdelrahmans vader is apotheker. De vader van Mohammed is kruidenier.",s:1},
+ {q:"Wat is Samya's geloof?",o:["Ze is moslim","Ze is christen","Ze is atheïst","Ze is jood"],c:1,e:"Samya is christen en Mohammed is moslim. Dat maakt hun liefde moeilijk.",s:2},
+ {q:"Wat is er gebeurd met Samya's vader?",o:["Hij zit in de gevangenis","Hij is naar Amerika verhuisd","Hij is overleden na een ongeluk met een motor","Hij is imam geworden"],c:2,e:"Haar vader overleed twee dagen na een aanrijding met een motorrijder.",s:2},
+ {q:"Wie is Layla voor Mohammed?",o:["Zijn vriendin","Zijn zus","Zijn moeder","Zijn nicht"],c:1,e:"Layla is de jongere zus van Mohammed en ze blogt als Joyce.",s:3},
+ {q:"Waarom doet Layla zich voor als Joyce uit Texas?",o:["Ze wil beroemd worden","Ze wil Engels oefenen","Ze is bang voor de Egyptische veiligheidsdiensten","Haar vriendin vroeg het"],c:2,e:"Een blog met kritiek kan gevaarlijk zijn in Egypte. Ze verbergt wie ze is.",s:3},
+ {q:"Hoe heet de blog van Layla?",o:["Confessions of an Egyptian Nerd","Tahrir Diaries","Letters from Alexandria","Cairo Calling"],c:0,e:"De blog heet Confessions of an Egyptian Nerd.",s:3},
+ {q:"Wie is Kimberly?",o:["Laylas zus in Amerika","Een Amerikaanse studente en virtuele vriendin van Layla","Een journaliste uit Cairo","Samya's tante"],c:1,e:"Kimberly woont in Los Angeles en chat met Layla.",s:3},
+ {q:"Wie was Khaled Said?",o:["De leider van Mohammeds groep","Een jonge man die door politieagenten werd vermoord","Een Egyptische voetballer","De imam uit de wijk"],c:1,e:"Khaled Said werd vermoord. Daarna ontstond de Facebookpagina 'Wij zijn allen Khaled Said'.",s:4},
+ {q:"Wie is de leider van de groep waar Abdelrahman bij komt?",o:["Michael","Omar","Hassan","Ali"],c:1,e:"Omar leidt de actieve cel van de beweging en spreekt Abdelrahman aan.",s:4},
+ {q:"Welke dag was de eerste grote demonstratie?",o:["25 januari","1 januari","11 februari","14 februari"],c:0,e:"Op 25 januari 2011, een nationale vakantiedag voor de politie, begint de eerste grote demonstratie.",s:6},
+ {q:"Wat doet de regering met het internet?",o:["Ze maakt het sneller","Ze sluit het internet en het mobiele netwerk af","Ze laat alleen de politie internetten","Ze doet niets"],c:1,e:"Rond 28 januari wordt het internet afgesloten. Mensen verliezen contact met elkaar.",s:5},
+ {q:"Waarmee reageert de politie op de demonstranten?",o:["Met bloemen","Met traangas, waterkanonnen en rubberkogels","Met een toespraak","Met niets"],c:1,e:"De politie reageert hard. Er vallen gewonden en doden.",s:6},
+ {q:"Wat gebeurt er op 11 februari 2011?",o:["Er komt een nieuwe president","Mubarak treedt af","Het internet gaat weer aan","De demonstraties stoppen"],c:1,e:"Mubarak valt. Voor Layla is er geen feest, want Mohammed is vermoord.",s:7},
+ {q:"Wat gebeurt er aan het einde met Mohammed?",o:["Hij emigreert naar Amerika","Hij wordt danser","Hij wordt doodgeschoten","Hij trouwt met Samya"],c:2,e:"Mohammed wordt doodgeschoten. Layla schrijft de blogpost 'Mijn broer'.",s:7},
+ {q:"Welke tekstvormen zitten naast de gewone hoofdstukken in het boek?",o:["Gedichten en liedjes","Blogposts en chatgesprekken","Krantenartikelen en brieven","Recepten"],c:1,e:"Blogposts van Layla met datum en reacties, en chatgesprekken met tijdstippen.",s:9}
+];
+
+var TALK=[
+ "Waarom blogt Layla anoniem, en wat zegt dat over Egypte?",
+ "Wat is het conflict tussen Mohammed en zijn omgeving over het dansen?",
+ "Waarom is de liefde tussen Mohammed en Samya moeilijk?",
+ "Waarom sluit Abdelrahman zich aan bij de groep? Wat vind je van Omar?",
+ "Wat is de rol van het internet in het verhaal?",
+ "Waarom eindigt het boek met Mohammeds dood, juist als Mubarak aftreedt?",
+ "Welk personage vond je het meest interessant en waarom?",
+ "Hoe past de titel bij het boek?",
+ "Zou je het boek aanraden? Waarom wel of niet?"
+];
+
+var KEY="traangas-studiehulp-v1";
+var st={view:"step",i:0,ans:{},shown:{},keys:{},best:null};
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);st.ans=p.ans||{};st.shown=p.shown||{};st.keys=p.keys||{};st.best=p.best||null}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({ans:st.ans,shown:st.shown,keys:st.keys,best:st.best}))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function qid(si,qi){return si+"_"+qi}
+function stepDone(si){return STEPS[si].qs.every(function(_,qi){return st.shown[qid(si,qi)]})}
+function doneCount(){var n=0;for(var i=0;i<STEPS.length;i++)if(stepDone(i))n++;return n}
+
+var quiz=null;
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function startQuiz(){
+  quiz={order:shuffle(QUIZ.map(function(_,i){return i})),n:0,score:0,picked:null,wrong:[],opts:{}};
+  QUIZ.forEach(function(q,i){var idx=shuffle(q.o.map(function(_,k){return k}));quiz.opts[i]=idx});
+  st.view="quiz";render();
+}
+
+function go(view,i){st.view=view;if(i!==undefined)st.i=i;try{history.replaceState(null,"","#"+(view==="step"?"stap-"+(st.i+1):view==="summary"?"samenvatting":"toets"))}catch(e){}render();window.scrollTo(0,0)}
+
+function renderNav(){
+  var h="";
+  STEPS.forEach(function(s,i){
+    var cur=st.view==="step"&&st.i===i;
+    h+='<button data-go="step" data-i="'+i+'" class="'+(stepDone(i)?"done":"")+'" aria-current="'+cur+'"><span class="n">'+DECO[i][0]+'</span><span class="t">'+esc(s.t)+'</span></button>';
+  });
+  h+='<div class="sep"></div>';
+  h+='<button data-go="summary" aria-current="'+(st.view==="summary")+'"><span class="n">📝</span><span class="t">Jouw samenvatting</span></button>';
+  h+='<button data-go="quiz" aria-current="'+(st.view==="quiz")+'"><span class="n">🎓</span><span class="t">Oefentoets</span></button>';
+  document.getElementById("nav").innerHTML=h;
+  document.getElementById("bar").style.width=Math.round(doneCount()/STEPS.length*100)+"%";
+}
+
+function renderStep(){
+  var s=STEPS[st.i],h='<div class="card">'+hero(DECO[st.i][0],DECO[st.i][1],'Stap '+(st.i+1)+' van '+STEPS.length,esc(s.t),esc(s.intro));
+  s.qs.forEach(function(q,qi){
+    var id=qid(st.i,qi),shown=st.shown[id];
+    h+='<div class="q"><span class="qno">💭 VRAAG '+(qi+1)+'</span><p class="qtext">'+esc(q.q)+'</p>';
+    h+='<textarea id="ta-'+id+'" data-id="'+id+'" placeholder="Schrijf in je eigen woorden wat je weet. Dit komt in jouw samenvatting.">'+esc(st.ans[id]||"")+'</textarea>';
+    h+='<div class="row"><button class="btn" data-hint="'+id+'">🔎 Hint</button><button class="btn primary" data-reveal="'+id+'">'+(shown?"Modelantwoord verbergen":"Vergelijk met modelantwoord")+'</button></div>';
+    h+='<div id="hint-'+id+'" class="hint" hidden>'+esc(q.h)+'</div>';
+    if(shown){
+      var checked=st.keys[id]||[];
+      h+='<div class="model"><div class="lab">💡 Modelantwoord</div><p>'+esc(q.a).replace(/\n/g,"<br>")+'</p><div class="lab" style="margin-top:12px">☑️ Wat had jij genoemd?</div><ul class="keys">';
+      q.k.forEach(function(k,ki){h+='<li><label><input type="checkbox" data-key="'+id+'" data-k="'+ki+'"'+(checked.indexOf(ki)>-1?" checked":"")+'> '+esc(k)+'</label></li>'});
+      h+='</ul><div class="score-chip" id="sc-'+id+'" style="margin-top:8px">'+checked.length+' van '+q.k.length+' kernpunten</div></div>';
+    }
+    h+='</div>';
+  });
+  h+='<div class="foot"><button class="btn" data-go="step" data-i="'+(st.i-1)+'"'+(st.i===0?" disabled":"")+'>Vorige</button>';
+  if(st.i<STEPS.length-1)h+='<button class="btn primary" data-go="step" data-i="'+(st.i+1)+'">Volgende stap</button>';
+  else h+='<button class="btn primary" data-go="summary">Naar jouw samenvatting</button>';
+  h+='</div></div>';
+  return h;
+}
+
+function summaryText(){
+  var out="Dansen tussen wolken van traangas (Monique Samuel)\n\n";
+  STEPS.forEach(function(s,si){
+    out+=s.t.toUpperCase()+"\n";
+    s.qs.forEach(function(q,qi){var id=qid(si,qi);var m=(st.ans[id]||"").trim();out+=(m||q.a)+"\n"});
+    out+="\n";
+  });
+  return out;
+}
+function renderSummary(){
+  var h='<div class="card">'+hero("📝","lav","Jouw samenvatting","Zo heb je het boek samengevat","Waar je zelf iets hebt ingevuld, staat jouw tekst. Waar niet, zie je het modelantwoord. Lees het één keer hardop door.");
+  var mine=0,total=0;
+  STEPS.forEach(function(s,si){
+    h+='<div class="sum-block"><h3>'+esc(s.t)+'</h3>';
+    s.qs.forEach(function(q,qi){
+      var id=qid(si,qi),m=(st.ans[id]||"").trim();total++;
+      if(m){mine++;h+='<span class="tag mine">✍️ Jouw antwoord</span><p>'+esc(m)+'</p>'}
+      else h+='<span class="tag">📌 Modelantwoord</span><p>'+esc(q.a)+'</p>';
+    });
+    h+='</div>';
+  });
+  h+='<div class="row"><button class="btn" id="copy">Kopieer samenvatting</button><button class="btn primary" data-go="quiz">Naar de oefentoets</button><span class="progress-mono" id="copied" aria-live="polite">'+mine+' van '+total+' antwoorden zelf geschreven</span></div></div>';
+  return h;
+}
+
+function renderQuizIntro(){
+  var h='<div class="card">'+hero("🎓","sand","Oefentoets",QUIZ.length+" vragen over het boek","Kies steeds één antwoord. Je ziet meteen of het goed is, met uitleg. Aan het eind zie je welke stappen je nog even moet herhalen.");
+  if(st.best!==null)h+='<p class="progress-mono" style="margin-top:14px">Beste score tot nu toe: '+st.best+' van '+QUIZ.length+'</p>';
+  h+='<div class="row"><button class="btn primary" id="startq">Start de toets</button></div></div>';
+  return h;
+}
+function renderQuiz(){
+  if(!quiz)return renderQuizIntro();
+  if(quiz.n>=quiz.order.length)return renderResult();
+  var qi=quiz.order[quiz.n],q=QUIZ[qi],idx=quiz.opts[qi],letters=["A","B","C","D"];
+  var h='<div class="card"><div class="eyebrow">Vraag '+(quiz.n+1)+' van '+quiz.order.length+'</div><h2>'+esc(q.q)+'</h2><div class="opts" role="group" aria-label="Antwoorden">';
+  idx.forEach(function(k,pos){
+    var cls="opt",answered=quiz.picked!==null;
+    if(answered){if(k===q.c)cls+=" right";else if(k===quiz.picked)cls+=" wrong"}
+    h+='<button class="'+cls+'" data-pick="'+k+'" aria-disabled="'+answered+'"><span class="l">'+letters[pos]+'</span><span>'+esc(q.o[k])+'</span></button>';
+  });
+  h+='</div>';
+  if(quiz.picked!==null){
+    h+='<div class="fb"><b>'+(quiz.picked===q.c?"✔️ Goed.":"✖️ Niet helemaal.")+'</b> '+esc(q.e)+'</div>';
+    h+='<div class="row"><button class="btn primary" id="nextq">'+(quiz.n===quiz.order.length-1?"Bekijk resultaat":"Volgende vraag")+'</button></div>';
+  }
+  h+='<div class="progress-mono" style="margin-top:16px">Score nu: '+quiz.score+'</div></div>';
+  return h;
+}
+function renderResult(){
+  var n=QUIZ.length,sc=quiz.score,pct=Math.round(sc/n*100);
+  var msg=pct>=85?"Sterk. Je kent het boek goed.":pct>=60?"Redelijk. Herhaal de stappen hieronder nog even.":"Nog even oefenen. Loop de stappen hieronder opnieuw door.";
+  var h='<div class="card">'+hero(pct>=60?"🌿":"🌧️",pct>=60?"sage":"rose","Resultaat",sc+" van "+n+" goed",msg);
+  if(quiz.wrong.length){
+    h+='<div class="wrongs">';
+    quiz.wrong.forEach(function(qi){var q=QUIZ[qi];h+='<div><b>'+esc(q.q)+'</b>Goed antwoord: '+esc(q.o[q.c])+'.<br><button class="link" data-go="step" data-i="'+q.s+'">Herhaal stap '+(q.s+1)+': '+esc(STEPS[q.s].t)+'</button></div>'});
+    h+='</div>';
+  }
+  h+='<div class="row"><button class="btn primary" id="startq">Toets opnieuw</button><button class="btn" data-go="summary">Naar mijn samenvatting</button></div>';
+  h+='<div class="q"><h3>🗣️ Oefen ook hardop voor het gesprek</h3><p class="sub">Beantwoord deze vragen in je eigen woorden en noem steeds een voorbeeld uit het boek.</p><ol class="talk">';
+  TALK.forEach(function(t){h+='<li>'+esc(t)+'</li>'});
+  h+='</ol></div></div>';
+  return h;
+}
+
+function render(){
+  renderNav();
+  var m=document.getElementById("main");
+  m.innerHTML=st.view==="step"?renderStep():st.view==="summary"?renderSummary():renderQuiz();
+}
+
+document.addEventListener("click",function(e){
+  var t=e.target.closest("[data-go],[data-hint],[data-reveal],[data-pick],#startq,#nextq,#copy");
+  if(!t)return;
+  if(t.hasAttribute("data-go")){
+    var v=t.getAttribute("data-go");
+    if(v==="quiz"){go("quiz");return}
+    var i=t.getAttribute("data-i");go(v,i!==null?parseInt(i,10):undefined);return;
+  }
+  if(t.hasAttribute("data-hint")){var el=document.getElementById("hint-"+t.getAttribute("data-hint"));el.hidden=!el.hidden;return}
+  if(t.hasAttribute("data-reveal")){var id=t.getAttribute("data-reveal");st.shown[id]=!st.shown[id];save();var y=window.scrollY;render();window.scrollTo(0,y);return}
+  if(t.id==="startq"){startQuiz();window.scrollTo(0,0);return}
+  if(t.id==="nextq"){quiz.n++;quiz.picked=null;if(quiz.n>=quiz.order.length&&(st.best===null||quiz.score>st.best)){st.best=quiz.score;save()}render();window.scrollTo(0,0);return}
+  if(t.hasAttribute("data-pick")){
+    if(quiz.picked!==null)return;
+    var k=parseInt(t.getAttribute("data-pick"),10),qi=quiz.order[quiz.n];
+    quiz.picked=k;
+    if(k===QUIZ[qi].c)quiz.score++;else quiz.wrong.push(qi);
+    render();return;
+  }
+  if(t.id==="copy"){
+    var txt=summaryText(),msg=document.getElementById("copied");
+    var fallback=function(){msg.textContent="Kopiëren lukt hier niet. Selecteer de tekst zelf.";};
+    try{navigator.clipboard.writeText(txt).then(function(){msg.textContent="Gekopieerd."},fallback)}catch(err){fallback()}
+  }
+});
+document.addEventListener("input",function(e){
+  var ta=e.target.closest("textarea[data-id]");
+  if(ta){st.ans[ta.getAttribute("data-id")]=ta.value;save()}
+});
+document.addEventListener("change",function(e){
+  var cb=e.target.closest("input[data-key]");
+  if(!cb)return;
+  var id=cb.getAttribute("data-key"),k=parseInt(cb.getAttribute("data-k"),10);
+  var arr=st.keys[id]||[],p=arr.indexOf(k);
+  if(cb.checked&&p<0)arr.push(k);if(!cb.checked&&p>-1)arr.splice(p,1);
+  st.keys[id]=arr;save();
+  var si=parseInt(id.split("_")[0],10),qi=parseInt(id.split("_")[1],10);
+  document.getElementById("sc-"+id).textContent=arr.length+" van "+STEPS[si].qs[qi].k.length+" kernpunten";
+});
+
+(function(){
+  var hsh=(location.hash||"").replace("#","");
+  var m=/^stap-(\d+)$/.exec(hsh);
+  if(m){var n=parseInt(m[1],10)-1;if(n>=0&&n<STEPS.length){st.i=n}}
+  else if(hsh==="samenvatting")st.view="summary";
+  else if(hsh==="toets")st.view="quiz";
+  render();
+})();
+</script>
+</body>
+</html>
